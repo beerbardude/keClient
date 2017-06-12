@@ -68381,6 +68381,9 @@ var renderKnownError = Symbol();
 var renderStat = Symbol();
 var renderName = Symbol();
 var renderCategory = Symbol();
+var renderDetailError = Symbol();
+var renderWorklogs = Symbol();
+var renderWorklog = Symbol();
 var onAddErrorClick = Symbol();
 var onShowDetailClick = Symbol();
 var onShowWorklogDetailClick = Symbol();
@@ -68401,13 +68404,13 @@ var _class = function () {
         var $addButton = $doc.querySelector(".add-button");
         $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory)
 
-        //let $detailButton = $doc.querySelector(".showDetail")
         //undefinded when no errors
+        //let $detailButton = $doc.querySelector(".showDetail")
         // if($detailButton !== undefined)
         //$detailButton.addEventListener('click', this[onShowDetailClick].bind(this))
 
-        //let $worklogDetailButton = $doc.querySelector(".showWorklog")
         //undefinded when no errors
+        //let $worklogDetailButton = $doc.querySelector(".showWorklog")
         // if($detailButton !== undefined)
         //$worklogDetailButton.addEventListener('click', this[onShowWorklogDetailClick].bind(this))
         );
