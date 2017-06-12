@@ -68205,10 +68205,9 @@ var _class = function () {
 
         this.store.getCategories().then(view.renderCategories.bind(view)).catch(view.renderError.bind(view));
 
-        console.log(view
-        //view.registerAddItemHandler(this.onAddItem.bind(this))
-
-        );view.registerAddKnownErrorHandler(this.onAddKnownError.bind(this));
+        view.registerAddKnownErrorHandler(this.onAddKnownError.bind(this));
+        view.registerShowDetailErrorHandler(this.onShowDetailError.bind(this));
+        view.registerShowWorklogDetailHandler(this.onShowWorklogDetail.bind(this));
     }
 
     _createClass(_class, [{
@@ -68217,10 +68216,25 @@ var _class = function () {
             console.log(knownError);
             this.store.addKnownError(knownError);
         }
+
+        //todo : load error detail and worklogs
+
     }, {
-        key: 'loadNames',
-        value: function loadNames() {
-            this.store.getNames();
+        key: 'onShowDetailError',
+        value: function onShowDetailError(knownError) {
+            var detailError = this.store.getKnownErrorDetails(knownError);
+            this.view.showDetailError(detailError);
+            var worklogs = this.store.getWorklogsFromKnownError(knownError);
+            this.view.showWorklogs(worklogs);
+        }
+
+        // todo: load worklog details
+
+    }, {
+        key: 'onShowWorklogDetail',
+        value: function onShowWorklogDetail(worklog) {
+            var worklogDetail = this.store.getWorklogDetails(worklog);
+            this.view.showWorklogDetail(worklog);
         }
     }]);
 
@@ -68250,8 +68264,6 @@ var Store = function () {
     _createClass(Store, [{
         key: 'getKnownErrors',
         value: function getKnownErrors() {
-
-            //        return fetch('http://10.22.37.89:3000/')
             return fetch('http://localhost:3000/').then(function (resp) {
                 if (resp.ok) {
                     return resp.json();
@@ -68262,16 +68274,13 @@ var Store = function () {
         }
     }, {
         key: 'addKnownError',
-        value: function addKnownError(item) {
-            console.log("addItem " + item.title);
-
-            request.post('http://localhost:3000/add', { json: item }, function (error, response, body) {
+        value: function addKnownError(knownError) {
+            request.post('http://localhost:3000/add', { json: knownError }, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    console.log('replace'
-                    //   window.location.replace('http://localhost:8008/src/index.html')
-                    );
+                    console.log('replace');
+                    window.location.replace('http://localhost:8008/src/index.html');
                 } else {
-                    console.log("error", item);
+                    console.log("error", knownError);
                 }
             });
         }
@@ -68308,6 +68317,48 @@ var Store = function () {
                 }
             });
         }
+
+        // todo: get error details
+
+    }, {
+        key: 'getKnownErrorDetails',
+        value: function getKnownErrorDetails(knownError) {
+            return fetch('http://localhost:3000/errorDetail').then(function (resp) {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    return Promise.reject(resp);
+                }
+            });
+        }
+
+        //todo: get worklogs
+
+    }, {
+        key: 'getWorklogsFromKnownError',
+        value: function getWorklogsFromKnownError(knownError) {
+            return fetch('http://localhost:3000/worklogs').then(function (resp) {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    return Promise.reject(resp);
+                }
+            });
+        }
+
+        //todo: get worklog details
+
+    }, {
+        key: 'getWorklogDetails',
+        value: function getWorklogDetails(worklog) {
+            return fetch('http://localhost:3000/singleWorklog').then(function (resp) {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    return Promise.reject(resp);
+                }
+            });
+        }
     }]);
 
     return Store;
@@ -68330,7 +68381,9 @@ var renderKnownError = Symbol();
 var renderStat = Symbol();
 var renderName = Symbol();
 var renderCategory = Symbol();
-var onClick = Symbol();
+var onAddErrorClick = Symbol();
+var onShowDetailClick = Symbol();
+var onShowWorklogDetailClick = Symbol();
 
 var _class = function () {
     function _class($doc) {
@@ -68346,7 +68399,18 @@ var _class = function () {
         var $inputCategory = $doc.querySelector(".new-error-category");
 
         var $addButton = $doc.querySelector(".add-button");
-        $addButton.addEventListener('click', this[onClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory));
+        $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory)
+
+        //let $detailButton = $doc.querySelector(".showDetail")
+        //undefinded when no errors
+        // if($detailButton !== undefined)
+        //$detailButton.addEventListener('click', this[onShowDetailClick].bind(this))
+
+        //let $worklogDetailButton = $doc.querySelector(".showWorklog")
+        //undefinded when no errors
+        // if($detailButton !== undefined)
+        //$worklogDetailButton.addEventListener('click', this[onShowWorklogDetailClick].bind(this))
+        );
     }
 
     _createClass(_class, [{
@@ -68355,7 +68419,17 @@ var _class = function () {
             this.onAddKnownErrorHandler = handler;
         }
     }, {
-        key: onClick,
+        key: "registerShowDetailErrorHandler",
+        value: function registerShowDetailErrorHandler(handler) {
+            this.onShowDetailErrorHandler = handler;
+        }
+    }, {
+        key: "registerShowWorklogDetailHandler",
+        value: function registerShowWorklogDetailHandler(handler) {
+            this.onShowWorklogDetailClick = handler;
+        }
+    }, {
+        key: onAddErrorClick,
         value: function value(event) {
             var title = arguments[0];
             var stat = arguments[1];
@@ -68370,29 +68444,41 @@ var _class = function () {
             this.onAddKnownErrorHandler(knownError);
         }
     }, {
+        key: onShowDetailClick,
+        value: function value(event) {
+            // todo: get id from button
+            var id = arguments[0];
+            var knownError = {
+                id: id.value
+            };
+            this.onShowDetailErrorHandler(knownError);
+        }
+    }, {
+        key: onShowWorklogDetailClick,
+        value: function value(event) {
+            var worklog = {
+                id: event.id
+            };
+            this.onShowWorklogDetailClick(worklog);
+        }
+
+        /**
+         * renders all known errors
+         * @param {*a known error} knownErrors 
+         */
+
+    }, {
         key: "renderKnownErrors",
         value: function renderKnownErrors(knownErrors) {
             var $list = this.$doc.querySelector(".error-list");
             $list.innerHTML = knownErrors.map(this[renderKnownError]);
         }
-    }, {
-        key: "renderStats",
-        value: function renderStats(stats) {
-            var $statSelection = this.$doc.querySelector(".new-error-status");
-            $statSelection.innerHTML = stats.map(this[renderStat]);
-        }
-    }, {
-        key: "renderCategories",
-        value: function renderCategories(categories) {
-            var $categorySelection = this.$doc.querySelector(".new-error-category");
-            $categorySelection.innerHTML = categories.map(this[renderCategory]);
-        }
-    }, {
-        key: "renderNames",
-        value: function renderNames(names) {
-            var $nameSelection = this.$doc.querySelector(".new-error-name");
-            $nameSelection.innerHTML = names.map(this[renderName]);
-        }
+
+        /**
+         * adds a known error to the error-list
+         * @param {*a known error} knownError 
+         */
+
     }, {
         key: "addKnownError",
         value: function addKnownError(knownError) {
@@ -68401,25 +68487,133 @@ var _class = function () {
             $div.innerHTML = html;
             this.$list.appendChild($div.childNodes[0]);
         }
+
+        /**
+        * renders a known error
+        * @param {*a known error} knownError 
+        */
+
     }, {
         key: renderKnownError,
         value: function value(knownError) {
-            return "<li data-id=\"" + knownError.id + "\">\n            <label>" + knownError.title + "</label>\n            <button class=\"destroy\"></button>\n        </li>";
+            return "<li data-id=\"" + knownError.id + "\">\n            <label>" + knownError.title + "</label>\n            <button class=\"showDetail\">Detail</button>\n        </li>";
         }
+
+        /**
+         * renders the statuses for selection
+         * @param {*the statuses} stats 
+         */
+
+    }, {
+        key: "renderStats",
+        value: function renderStats(stats) {
+            var $statSelection = this.$doc.querySelector(".new-error-status");
+            $statSelection.innerHTML = stats.map(this[renderStat]);
+        }
+
+        /**
+         * renders a status as option value for selection
+         * @param {*a status} stat 
+         */
+
     }, {
         key: renderStat,
         value: function value(stat) {
             return "<option value=\"" + stat.id + "\">" + stat.status + "</option>";
         }
+
+        /**
+         * renders categories for selection
+         * @param {*categories} categories 
+         */
+
+    }, {
+        key: "renderCategories",
+        value: function renderCategories(categories) {
+            var $categorySelection = this.$doc.querySelector(".new-error-category");
+            $categorySelection.innerHTML = categories.map(this[renderCategory]);
+        }
+
+        /**
+         * renders a categorie as option value for selection
+         * @param {*a category} category 
+         */
+
+    }, {
+        key: renderCategory,
+        value: function value(category) {
+            return "<option value=\"" + category.id + "\">" + category.category + "</option>";
+        }
+
+        /**
+         * renders names for selection
+         * @param {*names} names 
+         */
+
+    }, {
+        key: "renderNames",
+        value: function renderNames(names) {
+            var $nameSelection = this.$doc.querySelector(".new-error-name");
+            $nameSelection.innerHTML = names.map(this[renderName]);
+        }
+
+        /**
+         * renders a name as option value for selection
+         * @param {*a name} name 
+         */
+
     }, {
         key: renderName,
         value: function value(name) {
             return "<option value=\"" + name.id + "\">" + name.name + "</option>";
         }
     }, {
-        key: renderCategory,
-        value: function value(category) {
-            return "<option value=\"" + category.id + "\">" + category.category + "</option>";
+        key: "showDetailError",
+        value: function showDetailError(detailError) {
+            //todo: append error on html 
+            var detail = this[renderDetailError](detailError);
+            this.$doc.innerHTML = detail;
+        }
+    }, {
+        key: renderDetailError,
+        value: function value(detailError) {
+            // todo: render error detail
+            return "<h1>" + detailError.title + "</h1>\n                    <select class=\"new-error-status\">\n                    </select>                    \n                <h3>" + detailError.name + "</h3>                    \n                <h3>" + detailError.category + "</h3>                   \n                <input class=\"actual-worklog-text\">Worklog Text</ipnut> \n        <button class=\"add-worklog\" >Add</button>";
+        }
+
+        //todo: append worklogs
+
+    }, {
+        key: "showWorklogs",
+        value: function showWorklogs(worklogs) {
+            var worklogList = this[renderWorklogs](worklogs);
+            this.$doc.innerHTML = worklogList;
+        }
+
+        // todo: render worklog
+
+    }, {
+        key: renderWorklogs,
+        value: function value(worklog) {
+            return "<li data-id=\"" + worklog.id + "\">\n            <label>" + worklog.title + "</label>\n            <button class=\"showWorklog\">+</button>\n        </li>";
+        }
+
+        // todo: show wl detail
+
+    }, {
+        key: "showWorklogDetail",
+        value: function showWorklogDetail(worklog) {
+            var worklogDetails = this[renderWorklog](worklog);
+            this.$doc.innerHTML = worklogDetails;
+        }
+
+        // todo: render wl detail
+
+    }, {
+        key: renderWorklog,
+        value: function value(worklog) {
+            // todo: render worklog detail
+            return "<li data-id=\"" + worklog.id + "\">\n            <label>" + worklog.title + "</label>\n            " + worklog.text + "</li>";
         }
     }, {
         key: "renderError",

@@ -22,11 +22,9 @@ export default class {
             .then(view.renderCategories.bind(view))
             .catch(view.renderError.bind(view))
 
-
-        console.log(view)
-        //view.registerAddItemHandler(this.onAddItem.bind(this))
-
         view.registerAddKnownErrorHandler(this.onAddKnownError.bind(this))
+        view.registerShowDetailErrorHandler(this.onShowDetailError.bind(this))
+        view.registerShowWorklogDetailHandler(this.onShowWorklogDetail.bind(this))
     }
 
 
@@ -36,8 +34,19 @@ export default class {
 
     }
 
-    loadNames() {
-        this.store.getNames()
+    //todo : load error detail and worklogs
+    onShowDetailError(knownError){
+        let detailError = this.store.getKnownErrorDetails(knownError)
+        this.view.showDetailError(detailError)
+        let worklogs = this.store.getWorklogsFromKnownError(knownError)
+        this.view.showWorklogs(worklogs)
     }
+
+    // todo: load worklog details
+    onShowWorklogDetail(worklog) {
+        let worklogDetail = this.store.getWorklogDetails(worklog)
+        this.view.showWorklogDetail(worklog)
+    }
+
 
 }
