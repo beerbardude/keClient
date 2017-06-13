@@ -1,5 +1,7 @@
 'use strict'
 
+const getKnownErrorOfAllErrors = Symbol()
+
 export default class {
     constructor(view, store){
         this.view = view
@@ -8,7 +10,6 @@ export default class {
         this.store.getKnownErrors()
             .then(view.renderKnownErrors.bind(view))
             .catch(view.renderError.bind(view))
-
 
         this.store.getStats()
             .then(view.renderStats.bind(view))
@@ -25,22 +26,36 @@ export default class {
         view.registerAddKnownErrorHandler(this.onAddKnownError.bind(this))
         view.registerShowDetailErrorHandler(this.onShowDetailError.bind(this))
         view.registerShowWorklogDetailHandler(this.onShowWorklogDetail.bind(this))
+        view.registerAddWorklogClick(this.onAddWorklog.bind(this))
+
     }
 
 
     onAddKnownError(knownError){
         console.log(knownError)
         this.store.addKnownError(knownError)
-
     }
 
-    //todo : load error detail and worklogs
-    onShowDetailError(knownError){
-        let detailError = this.store.getKnownErrorDetails(knownError)
-        this.view.showDetailError(detailError)
-        let worklogs = this.store.getWorklogsFromKnownError(knownError)
-        this.view.showWorklogs(worklogs)
+
+    onShowDetailError(knownErrorId){
+        //let detail = new Detail(this.view, this.store, knownErrorId)
+        // todo : resolve promise
+        let view = this.view
+        // console.log(view)
+        //this.store.getKnownErrorById(knownErrorId)
+            // .then(view.renderDetailErrors().bind(view))
+            // .catch(view.renderError().bind(view))
+
+        // todo: OR get promise value
+        let detError = this.store.getKnownErrorById(knownErrorId)
+        this.view.renderDetailErrors(detError)
+
+
+        // todo : worklogs
+        //let worklogs = this.store.getWorklogsFromKnownError(knownError)
+        //this.view.showWorklogs(worklogs)
     }
+
 
     // todo: load worklog details
     onShowWorklogDetail(worklog) {
@@ -48,5 +63,17 @@ export default class {
         this.view.showWorklogDetail(worklog)
     }
 
+    [getKnownErrorOfAllErrors](knownErrors, knownError) {
+        return knownErrors.then(result => {
+            result.forEach(value => {
+                if(value.id == knownError.id) {
+                    value
+                }
+            });
+        }).catch(err => console.log("Error in get error of all known errors"))
+    }
 
+    onAddWorklog(worklog) {
+        this.store.addWorklog(worklog)
+    }
 }

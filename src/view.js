@@ -10,6 +10,7 @@ const renderWorklog = Symbol()
 const onAddErrorClick = Symbol()
 const onShowDetailClick = Symbol()
 const onShowWorklogDetailClick = Symbol()
+const onAddWorklogClick = Symbol()
 
 export default class {
     constructor($doc){
@@ -17,7 +18,6 @@ export default class {
         this.$list = this.$doc.querySelector(".error-list")
 
         let $inputTitle = $doc.querySelector(".new-error-title")
-        //$inputTitle.addEventListener('change', this[onChangeInput].bind(this))
         let $inputStatus = $doc.querySelector(".new-error-status")
         let $inputName = $doc.querySelector(".new-error-name")
         let $inputCategory = $doc.querySelector(".new-error-category")
@@ -25,15 +25,6 @@ export default class {
         let $addButton = $doc.querySelector(".add-button")
         $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory))
 
-        //undefinded when no errors
-        //let $detailButton = $doc.querySelector(".showDetail")
-        // if($detailButton !== undefined)
-        //$detailButton.addEventListener('click', this[onShowDetailClick].bind(this))
-        
-        //undefinded when no errors
-        //let $worklogDetailButton = $doc.querySelector(".showWorklog")
-        // if($detailButton !== undefined)
-        //$worklogDetailButton.addEventListener('click', this[onShowWorklogDetailClick].bind(this))
     }
 
 
@@ -47,6 +38,10 @@ export default class {
 
     registerShowWorklogDetailHandler(handler) {
         this.onShowWorklogDetailClick = handler
+    }
+
+    registerAddWorklogClick(handler) {
+        this.onAddWorklockClick = handler
     }
 
 
@@ -66,10 +61,8 @@ export default class {
 
 
     [onShowDetailClick](event) {
-        // todo: get id from button
-        let id = arguments[0]
         let knownError =  {
-            id: id.value
+            id: arguments[0]
         }
         this.onShowDetailErrorHandler(knownError)
     }
@@ -82,15 +75,31 @@ export default class {
     }
 
 
+    [onAddWorklogClick](event) {
+        let worklogRecord =  {
+            id : arguments[0],
+            text : arguments[1]
+        }
+        this.onAddWorklogClick(worklogRecord)
+    }
+
     /**
      * renders all known errors
+     * adds eventlistener to buttons
      * @param {*a known error} knownErrors 
      */
     renderKnownErrors(knownErrors){
         let $list = this.$doc.querySelector(".error-list")
         $list.innerHTML = knownErrors.map(this[renderKnownError])
+
+        let $knownErrorDivs = $list.querySelectorAll(".knownErrorDiv")
+        $knownErrorDivs.forEach(div => {
+            let knownErrorId = div.querySelector(".knownErrorId")
+            let detailButton = div.querySelector(".showDetail")
+            detailButton.addEventListener('click', this[onShowDetailClick].bind(this, knownErrorId.innerHTML))
+        });
     }
-    
+
     /**
      * adds a known error to the error-list
      * @param {*a known error} knownError 
@@ -107,9 +116,12 @@ export default class {
     * @param {*a known error} knownError 
     */
     [renderKnownError](knownError){
-        return `<li data-id="${knownError.id}">
+        return `<li class="knownErrorLi" >
             <label>${knownError.title}</label>
-            <button class="showDetail">Detail</button>
+            <div class="knownErrorDiv">
+                <input class="showDetail" type="submit" value="Detail"/>
+                <label hidden class="knownErrorId">${knownError.id}</label>
+            </div>
         </li>`;
     }    
 
@@ -162,23 +174,33 @@ export default class {
      */
     [renderName](name){
         return `<option value="${name.id}">${name.name}</option>`;
-    }    
+    }
 
-    showDetailError(detailError) {
-        //todo: append error on html 
-        let detail = this[renderDetailError](detailError)
-        this.$doc.innerHTML = detail
+    // todo : get promise value working
+    renderDetailErrors(detailError) {
+        console.log(detailError)
+        //this.$doc.innerHTML = detailError.map(this[renderDetailError])
+        let det = detailError.then(console.log())
+        console.log('det',det)
+        window.document.body.innerHTML = this[renderDetailError](detailError)
+
+        let errorId = detailError.id
+
+        let worklog = this.$doc.querySelector("actual-worklog-text")
+        let addWorkLogButton = this.$doc.querySelector(".add-worklog")
+        addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, errorId, worklog))
     }
 
     [renderDetailError](detailError) {
-        // todo: render error detail
-        return `<h1>${detailError.title}</h1>
+        console.log("detail render", detailError)
+        return `<input class="back-button" type="submit" value="Back"/>
+                <h1>${detailError.title}</h1>
                     <select class="new-error-status">
                     </select>                    
                 <h3>${detailError.name}</h3>                    
                 <h3>${detailError.category}</h3>                   
                 <input class="actual-worklog-text">Worklog Text</ipnut> 
-        <button class="add-worklog" >Add</button>`;
+        <input class="add-worklog" type="submit" value="Add Worklog"/>`;
     }
 
     //todo: append worklogs
@@ -191,7 +213,7 @@ export default class {
     [renderWorklogs](worklog) {
         return `<li data-id="${worklog.id}">
             <label>${worklog.title}</label>
-            <button class="showWorklog">+</button>
+            <button class="showWorklog" type="submit">+</button>
         </li>`;
     }
 
@@ -212,6 +234,8 @@ export default class {
 
 
     renderError(error) {
+        let errorDiv = this.$doc.querySelector(".errorDiv")
+        errorDiv.innerHTML = "Error " + error
         console.log("DEBUG", error)
     }
 }

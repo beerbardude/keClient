@@ -13,7 +13,18 @@ export default class Store {
                     return Promise.reject(resp)
                 }
             })
+    }
 
+    getKnownErrorById(id) {
+        console.log(id)
+        return fetch('http://localhost:3000/error?id=' + id).then((resp) => {
+            if(resp.ok) {
+                return resp.json()
+            }
+            else {
+                return Promise.reject(resp)
+            }
+        })
     }
 
     addKnownError(knownError) {
@@ -32,6 +43,22 @@ export default class Store {
         );
     }
 
+    // todo : check server method
+    addWorklog(worklog) {
+        request.post(
+            'http://localhost:3000/addWl',
+            {json:worklog},
+            function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    console.log('replace')
+                    window.location.replace('http://localhost:8008/src/index.html')
+                }
+                else {
+                    console.log("error", worklog)
+                }
+            }
+        );
+    }
 
     getStats() {
         return fetch('http://localhost:3000/statuses').then((resp) => {
@@ -67,8 +94,8 @@ export default class Store {
     }
 
     // todo: get error details
-    getKnownErrorDetails(knownError) {
-        return fetch('http://localhost:3000/errorDetail').then((resp) => {
+    getKnownErrorDetails() {
+        return fetch('http://localhost:3000/').then((resp) => {
             if(resp.ok) {
                 return resp.json()
             }
@@ -101,4 +128,6 @@ export default class Store {
             }
         })
     }
+
+
 }
