@@ -116,11 +116,15 @@ export default class {
     * @param {*a known error} knownError 
     */
     [renderKnownError](knownError){
-        return `<li class="knownErrorLi" >
-            <label>${knownError.title}</label>
-            <div class="knownErrorDiv">
-                <input class="showDetail" type="submit" value="Detail"/>
-                <label hidden class="knownErrorId">${knownError.id}</label>
+        return `<div class="knownErrorDiv">
+            <li class="knownErrorLi" >
+            <label class="knownErrorId">${knownError.id}</label>
+            <label class="knownErrorTitle">${knownError.title}</label>
+            <label class="knownErrorStatus">${knownError.status}</label>
+            <label class="knownErrorName">${knownError.name}</label>
+            <label class="knownErrorCategory">${knownError.category}</label>
+            
+            <input class="showDetail" type="submit" value="Detail"/>
             </div>
         </li>`;
     }    
@@ -178,10 +182,8 @@ export default class {
 
     // todo : get promise value working
     renderDetailErrors(detailError) {
-        console.log(detailError)
         //this.$doc.innerHTML = detailError.map(this[renderDetailError])
-        let det = detailError.then(console.log())
-        console.log('det',det)
+        console.log('det',detailError)
         window.document.body.innerHTML = this[renderDetailError](detailError)
 
         let errorId = detailError.id
@@ -191,6 +193,7 @@ export default class {
         addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, errorId, worklog))
     }
 
+    //todo : get select values
     [renderDetailError](detailError) {
         console.log("detail render", detailError)
         return `<input class="back-button" type="submit" value="Back"/>

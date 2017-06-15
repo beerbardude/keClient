@@ -2,26 +2,42 @@
 
 let request = require('request');
 
+const server = "http://localhost:3000/"
+//const server = "http://10.43.18.170:3000/"
+
 export default class Store {
 
     getKnownErrors() {
-        return fetch('http://localhost:3000/').then((resp) => {
-                if(resp.ok) {
-                    return resp.json()
-                }
-                else {
-                    return Promise.reject(resp)
-                }
-            })
+        let headers = new Headers({
+            'Accept': 'application/json'
+        })
+        return fetch(server, {
+            method: 'GET',
+            headers: headers,
+        }).then((resp)=>{
+            if(resp.ok){
+                return resp.json()
+            }else{
+                return Promise.reject(resp)
+            }
+        })
     }
 
     getKnownErrorById(id) {
         console.log(id)
-        return fetch('http://localhost:3000/error?id=' + id).then((resp) => {
-            if(resp.ok) {
-                return resp.json()
-            }
-            else {
+        let headers = new Headers({
+            'Accept': 'application/json'
+        })
+
+        //todo : fetch url anpassen
+        return fetch(`http://localhost:3000/ke/:id/`, {
+            method: 'GET',
+            headers: headers,
+        }).then((resp)=>{
+            if(resp.ok){
+                resp.json()
+                //return Promise.resolve(resp)
+            }else{
                 return Promise.reject(resp)
             }
         })
@@ -29,7 +45,7 @@ export default class Store {
 
     addKnownError(knownError) {
         request.post(
-            'http://localhost:3000/add',
+            server + 'add',
             {json:knownError},
             function (error, response, body) {
                 if (!error && response.statusCode == 200) {
@@ -46,7 +62,7 @@ export default class Store {
     // todo : check server method
     addWorklog(worklog) {
         request.post(
-            'http://localhost:3000/addWl',
+            server + 'addWl',
             {json:worklog},
             function (error, response, body) {
                 if (!error && response.statusCode == 200) {
@@ -61,33 +77,48 @@ export default class Store {
     }
 
     getStats() {
-        return fetch('http://localhost:3000/statuses').then((resp) => {
-            if(resp.ok) {
+        let headers = new Headers({
+            'Accept': 'application/json'
+        })
+        return fetch(server + 'statuses', {
+            method: 'GET',
+            headers: headers,
+        }).then((resp)=>{
+            if(resp.ok){
                 return resp.json()
-            }
-            else {
+            }else{
                 return Promise.reject(resp)
             }
         })
     }
 
     getNames() {
-        return fetch('http://localhost:3000/names').then((resp) => {
-            if(resp.ok) {
+        let headers = new Headers({
+            'Accept': 'application/json'
+        })
+        return fetch(server + 'names', {
+            method: 'GET',
+            headers: headers,
+        }).then((resp)=>{
+            if(resp.ok){
                 return resp.json()
-            }
-            else {
+            }else{
                 return Promise.reject(resp)
             }
         })
     }
 
     getCategories() {
-        return fetch('http://localhost:3000/cat').then((resp) => {
-            if(resp.ok) {
+        let headers = new Headers({
+            'Accept': 'application/json'
+        })
+        return fetch(server + 'cat', {
+            method: 'GET',
+            headers: headers,
+        }).then((resp)=>{
+            if(resp.ok){
                 return resp.json()
-            }
-            else {
+            }else{
                 return Promise.reject(resp)
             }
         })
@@ -95,11 +126,16 @@ export default class Store {
 
     // todo: get error details
     getKnownErrorDetails() {
-        return fetch('http://localhost:3000/').then((resp) => {
-            if(resp.ok) {
+        let headers = new Headers({
+            'Accept': 'application/json'
+        })
+        return fetch(server + '', {
+            method: 'GET',
+            headers: headers,
+        }).then((resp)=>{
+            if(resp.ok){
                 return resp.json()
-            }
-            else {
+            }else{
                 return Promise.reject(resp)
             }
         })
@@ -107,11 +143,16 @@ export default class Store {
 
     //todo: get worklogs
     getWorklogsFromKnownError(knownError) {
-          return fetch('http://localhost:3000/worklogs').then((resp) => {
-            if(resp.ok) {
+        let headers = new Headers({
+            'Accept': 'application/json'
+        })
+        return fetch(server + 'worklog', {
+            method: 'GET',
+            headers: headers,
+        }).then((resp)=>{
+            if(resp.ok){
                 return resp.json()
-            }
-            else {
+            }else{
                 return Promise.reject(resp)
             }
         })
@@ -119,11 +160,16 @@ export default class Store {
 
     //todo: get worklog details
     getWorklogDetails(worklog) {
-          return fetch('http://localhost:3000/singleWorklog').then((resp) => {
-            if(resp.ok) {
+        let headers = new Headers({
+            'Accept': 'application/json'
+        })
+        return fetch(server + 'singleWorklog', {
+            method: 'GET',
+            headers: headers,
+        }).then((resp)=>{
+            if(resp.ok){
                 return resp.json()
-            }
-            else {
+            }else{
                 return Promise.reject(resp)
             }
         })

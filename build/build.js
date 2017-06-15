@@ -68190,6 +68190,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var getKnownErrorOfAllErrors = Symbol();
+
 var _class = function () {
     function _class(view, store) {
         _classCallCheck(this, _class);
@@ -68208,33 +68210,61 @@ var _class = function () {
         view.registerAddKnownErrorHandler(this.onAddKnownError.bind(this));
         view.registerShowDetailErrorHandler(this.onShowDetailError.bind(this));
         view.registerShowWorklogDetailHandler(this.onShowWorklogDetail.bind(this));
+        view.registerAddWorklogClick(this.onAddWorklog.bind(this));
     }
 
     _createClass(_class, [{
-        key: 'onAddKnownError',
+        key: "onAddKnownError",
         value: function onAddKnownError(knownError) {
             console.log(knownError);
             this.store.addKnownError(knownError);
         }
-
-        //todo : load error detail and worklogs
-
     }, {
-        key: 'onShowDetailError',
-        value: function onShowDetailError(knownError) {
-            var detailError = this.store.getKnownErrorDetails(knownError);
-            this.view.showDetailError(detailError);
-            var worklogs = this.store.getWorklogsFromKnownError(knownError);
-            this.view.showWorklogs(worklogs);
+        key: "onShowDetailError",
+        value: function onShowDetailError(knownErrorId) {
+            //let detail = new Detail(this.view, this.store, knownErrorId)
+            // todo : resolve promise
+            var view = this.view;
+            // console.log(view)
+            //this.store.getKnownErrorById(knownErrorId)
+            // .then(view.renderDetailErrors().bind(view))
+            // .catch(view.renderError().bind(view))
+
+            // todo: OR get promise value
+            var detError = this.store.getKnownErrorById(knownErrorId);
+            this.view.renderDetailErrors(detError
+
+            // todo : worklogs
+            //let worklogs = this.store.getWorklogsFromKnownError(knownError)
+            //this.view.showWorklogs(worklogs)
+            );
         }
 
         // todo: load worklog details
 
     }, {
-        key: 'onShowWorklogDetail',
+        key: "onShowWorklogDetail",
         value: function onShowWorklogDetail(worklog) {
             var worklogDetail = this.store.getWorklogDetails(worklog);
             this.view.showWorklogDetail(worklog);
+        }
+    }, {
+        key: getKnownErrorOfAllErrors,
+        value: function value(knownErrors, knownError) {
+            return knownErrors.then(function (result) {
+                result.forEach(function (value) {
+                    if (value.id == knownError.id) {
+                        value;
+                    }
+                });
+            }).catch(function (err) {
+                return console.log("Error in get error of all known errors");
+            });
+        }
+    }, {
+        key: "onAddWorklog",
+        value: function onAddWorklog(worklog) {
+            this.store.addWorklog(worklog);
         }
     }]);
 
@@ -68256,6 +68286,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var request = require('request');
 
+var server = "http://localhost:3000/";
+//const server = "http://10.43.18.170:3000/"
+
 var Store = function () {
     function Store() {
         _classCallCheck(this, Store);
@@ -68264,7 +68297,13 @@ var Store = function () {
     _createClass(Store, [{
         key: 'getKnownErrors',
         value: function getKnownErrors() {
-            return fetch('http://localhost:3000/').then(function (resp) {
+            var headers = new Headers({
+                'Accept': 'application/json'
+            });
+            return fetch(server, {
+                method: 'GET',
+                headers: headers
+            }).then(function (resp) {
                 if (resp.ok) {
                     return resp.json();
                 } else {
@@ -68273,9 +68312,30 @@ var Store = function () {
             });
         }
     }, {
+        key: 'getKnownErrorById',
+        value: function getKnownErrorById(id) {
+            console.log(id);
+            var headers = new Headers({
+                'Accept': 'application/json'
+            });
+
+            return fetch('http://localhost:3000/ke/:id/', {
+                method: 'GET',
+                headers: headers
+            }).then(function (resp) {
+                if (resp.ok) {
+                    resp.json
+                    //return Promise.resolve(resp)
+                    ();
+                } else {
+                    return Promise.reject(resp);
+                }
+            });
+        }
+    }, {
         key: 'addKnownError',
         value: function addKnownError(knownError) {
-            request.post('http://localhost:3000/add', { json: knownError }, function (error, response, body) {
+            request.post(server + 'add', { json: knownError }, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     console.log('replace');
                     window.location.replace('http://localhost:8008/src/index.html');
@@ -68284,10 +68344,31 @@ var Store = function () {
                 }
             });
         }
+
+        // todo : check server method
+
+    }, {
+        key: 'addWorklog',
+        value: function addWorklog(worklog) {
+            request.post(server + 'addWl', { json: worklog }, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    console.log('replace');
+                    window.location.replace('http://localhost:8008/src/index.html');
+                } else {
+                    console.log("error", worklog);
+                }
+            });
+        }
     }, {
         key: 'getStats',
         value: function getStats() {
-            return fetch('http://localhost:3000/statuses').then(function (resp) {
+            var headers = new Headers({
+                'Accept': 'application/json'
+            });
+            return fetch(server + 'statuses', {
+                method: 'GET',
+                headers: headers
+            }).then(function (resp) {
                 if (resp.ok) {
                     return resp.json();
                 } else {
@@ -68298,7 +68379,13 @@ var Store = function () {
     }, {
         key: 'getNames',
         value: function getNames() {
-            return fetch('http://localhost:3000/names').then(function (resp) {
+            var headers = new Headers({
+                'Accept': 'application/json'
+            });
+            return fetch(server + 'names', {
+                method: 'GET',
+                headers: headers
+            }).then(function (resp) {
                 if (resp.ok) {
                     return resp.json();
                 } else {
@@ -68309,7 +68396,13 @@ var Store = function () {
     }, {
         key: 'getCategories',
         value: function getCategories() {
-            return fetch('http://localhost:3000/cat').then(function (resp) {
+            var headers = new Headers({
+                'Accept': 'application/json'
+            });
+            return fetch(server + 'cat', {
+                method: 'GET',
+                headers: headers
+            }).then(function (resp) {
                 if (resp.ok) {
                     return resp.json();
                 } else {
@@ -68322,8 +68415,14 @@ var Store = function () {
 
     }, {
         key: 'getKnownErrorDetails',
-        value: function getKnownErrorDetails(knownError) {
-            return fetch('http://localhost:3000/errorDetail').then(function (resp) {
+        value: function getKnownErrorDetails() {
+            var headers = new Headers({
+                'Accept': 'application/json'
+            });
+            return fetch(server + '', {
+                method: 'GET',
+                headers: headers
+            }).then(function (resp) {
                 if (resp.ok) {
                     return resp.json();
                 } else {
@@ -68337,7 +68436,13 @@ var Store = function () {
     }, {
         key: 'getWorklogsFromKnownError',
         value: function getWorklogsFromKnownError(knownError) {
-            return fetch('http://localhost:3000/worklogs').then(function (resp) {
+            var headers = new Headers({
+                'Accept': 'application/json'
+            });
+            return fetch(server + 'worklog', {
+                method: 'GET',
+                headers: headers
+            }).then(function (resp) {
                 if (resp.ok) {
                     return resp.json();
                 } else {
@@ -68351,7 +68456,13 @@ var Store = function () {
     }, {
         key: 'getWorklogDetails',
         value: function getWorklogDetails(worklog) {
-            return fetch('http://localhost:3000/singleWorklog').then(function (resp) {
+            var headers = new Headers({
+                'Accept': 'application/json'
+            });
+            return fetch(server + 'singleWorklog', {
+                method: 'GET',
+                headers: headers
+            }).then(function (resp) {
                 if (resp.ok) {
                     return resp.json();
                 } else {
@@ -68387,6 +68498,7 @@ var renderWorklog = Symbol();
 var onAddErrorClick = Symbol();
 var onShowDetailClick = Symbol();
 var onShowWorklogDetailClick = Symbol();
+var onAddWorklogClick = Symbol();
 
 var _class = function () {
     function _class($doc) {
@@ -68395,25 +68507,13 @@ var _class = function () {
         this.$doc = $doc;
         this.$list = this.$doc.querySelector(".error-list");
 
-        var $inputTitle = $doc.querySelector(".new-error-title"
-        //$inputTitle.addEventListener('change', this[onChangeInput].bind(this))
-        );var $inputStatus = $doc.querySelector(".new-error-status");
+        var $inputTitle = $doc.querySelector(".new-error-title");
+        var $inputStatus = $doc.querySelector(".new-error-status");
         var $inputName = $doc.querySelector(".new-error-name");
         var $inputCategory = $doc.querySelector(".new-error-category");
 
         var $addButton = $doc.querySelector(".add-button");
-        $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory)
-
-        //undefinded when no errors
-        //let $detailButton = $doc.querySelector(".showDetail")
-        // if($detailButton !== undefined)
-        //$detailButton.addEventListener('click', this[onShowDetailClick].bind(this))
-
-        //undefinded when no errors
-        //let $worklogDetailButton = $doc.querySelector(".showWorklog")
-        // if($detailButton !== undefined)
-        //$worklogDetailButton.addEventListener('click', this[onShowWorklogDetailClick].bind(this))
-        );
+        $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory));
     }
 
     _createClass(_class, [{
@@ -68430,6 +68530,11 @@ var _class = function () {
         key: "registerShowWorklogDetailHandler",
         value: function registerShowWorklogDetailHandler(handler) {
             this.onShowWorklogDetailClick = handler;
+        }
+    }, {
+        key: "registerAddWorklogClick",
+        value: function registerAddWorklogClick(handler) {
+            this.onAddWorklockClick = handler;
         }
     }, {
         key: onAddErrorClick,
@@ -68449,10 +68554,8 @@ var _class = function () {
     }, {
         key: onShowDetailClick,
         value: function value(event) {
-            // todo: get id from button
-            var id = arguments[0];
             var knownError = {
-                id: id.value
+                id: arguments[0]
             };
             this.onShowDetailErrorHandler(knownError);
         }
@@ -68464,17 +68567,36 @@ var _class = function () {
             };
             this.onShowWorklogDetailClick(worklog);
         }
+    }, {
+        key: onAddWorklogClick,
+        value: function value(event) {
+            var worklogRecord = {
+                id: arguments[0],
+                text: arguments[1]
+            };
+            this.onAddWorklogClick(worklogRecord);
+        }
 
         /**
          * renders all known errors
+         * adds eventlistener to buttons
          * @param {*a known error} knownErrors 
          */
 
     }, {
         key: "renderKnownErrors",
         value: function renderKnownErrors(knownErrors) {
+            var _this = this;
+
             var $list = this.$doc.querySelector(".error-list");
             $list.innerHTML = knownErrors.map(this[renderKnownError]);
+
+            var $knownErrorDivs = $list.querySelectorAll(".knownErrorDiv");
+            $knownErrorDivs.forEach(function (div) {
+                var knownErrorId = div.querySelector(".knownErrorId");
+                var detailButton = div.querySelector(".showDetail");
+                detailButton.addEventListener('click', _this[onShowDetailClick].bind(_this, knownErrorId.innerHTML));
+            });
         }
 
         /**
@@ -68499,7 +68621,7 @@ var _class = function () {
     }, {
         key: renderKnownError,
         value: function value(knownError) {
-            return "<li data-id=\"" + knownError.id + "\">\n            <label>" + knownError.title + "</label>\n            <button class=\"showDetail\">Detail</button>\n        </li>";
+            return "<div class=\"knownErrorDiv\">\n            <li class=\"knownErrorLi\" >\n            <label class=\"knownErrorId\">" + knownError.id + "</label>\n            <label class=\"knownErrorTitle\">" + knownError.title + "</label>\n            <label class=\"knownErrorStatus\">" + knownError.status + "</label>\n            <label class=\"knownErrorName\">" + knownError.name + "</label>\n            <label class=\"knownErrorCategory\">" + knownError.category + "</label>\n            \n            <input class=\"showDetail\" type=\"submit\" value=\"Detail\"/>\n            </div>\n        </li>";
         }
 
         /**
@@ -68570,18 +68692,30 @@ var _class = function () {
         value: function value(name) {
             return "<option value=\"" + name.id + "\">" + name.name + "</option>";
         }
+
+        // todo : get promise value working
+
     }, {
-        key: "showDetailError",
-        value: function showDetailError(detailError) {
-            //todo: append error on html 
-            var detail = this[renderDetailError](detailError);
-            this.$doc.innerHTML = detail;
+        key: "renderDetailErrors",
+        value: function renderDetailErrors(detailError) {
+            //this.$doc.innerHTML = detailError.map(this[renderDetailError])
+            console.log('det', detailError);
+            window.document.body.innerHTML = this[renderDetailError](detailError);
+
+            var errorId = detailError.id;
+
+            var worklog = this.$doc.querySelector("actual-worklog-text");
+            var addWorkLogButton = this.$doc.querySelector(".add-worklog");
+            addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, errorId, worklog));
         }
+
+        //todo : get select values
+
     }, {
         key: renderDetailError,
         value: function value(detailError) {
-            // todo: render error detail
-            return "<h1>" + detailError.title + "</h1>\n                    <select class=\"new-error-status\">\n                    </select>                    \n                <h3>" + detailError.name + "</h3>                    \n                <h3>" + detailError.category + "</h3>                   \n                <input class=\"actual-worklog-text\">Worklog Text</ipnut> \n        <button class=\"add-worklog\" >Add</button>";
+            console.log("detail render", detailError);
+            return "<input class=\"back-button\" type=\"submit\" value=\"Back\"/>\n                <h1>" + detailError.title + "</h1>\n                    <select class=\"new-error-status\">\n                    </select>                    \n                <h3>" + detailError.name + "</h3>                    \n                <h3>" + detailError.category + "</h3>                   \n                <input class=\"actual-worklog-text\">Worklog Text</ipnut> \n        <input class=\"add-worklog\" type=\"submit\" value=\"Add Worklog\"/>";
         }
 
         //todo: append worklogs
@@ -68598,7 +68732,7 @@ var _class = function () {
     }, {
         key: renderWorklogs,
         value: function value(worklog) {
-            return "<li data-id=\"" + worklog.id + "\">\n            <label>" + worklog.title + "</label>\n            <button class=\"showWorklog\">+</button>\n        </li>";
+            return "<li data-id=\"" + worklog.id + "\">\n            <label>" + worklog.title + "</label>\n            <button class=\"showWorklog\" type=\"submit\">+</button>\n        </li>";
         }
 
         // todo: show wl detail
@@ -68621,6 +68755,8 @@ var _class = function () {
     }, {
         key: "renderError",
         value: function renderError(error) {
+            var errorDiv = this.$doc.querySelector(".errorDiv");
+            errorDiv.innerHTML = "Error " + error;
             console.log("DEBUG", error);
         }
     }]);
