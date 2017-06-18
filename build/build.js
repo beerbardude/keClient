@@ -68316,17 +68316,25 @@ var Store = function () {
         value: function getKnownErrorById(id) {
             console.log(id);
             var headers = new Headers({
+                'Content-Type': 'application/json',
                 'Accept': 'application/json'
             });
 
-            return fetch('http://localhost:3000/ke/:id/', {
+            var id_string = id.id;
+            console.log('id_string:' + id_string);
+            console.log('id stringify' + JSON.stringify(id.id));
+            console.log('http://localhost:3000/ke/' + id_string
+
+            //todo : fetch url anpassen
+            );return fetch('http://localhost:3000/ke/' + id_string, {
                 method: 'GET',
                 headers: headers
             }).then(function (resp) {
                 if (resp.ok) {
-                    resp.json
-                    //return Promise.resolve(resp)
-                    ();
+                    return resp.json();
+                    console.log(resp.json()
+                    //return Promise.resolve(resp.json())
+                    );
                 } else {
                     return Promise.reject(resp);
                 }
@@ -68621,6 +68629,7 @@ var _class = function () {
     }, {
         key: renderKnownError,
         value: function value(knownError) {
+            console.log(knownError);
             return "<div class=\"knownErrorDiv\">\n            <li class=\"knownErrorLi\" >\n            <label class=\"knownErrorId\">" + knownError.id + "</label>\n            <label class=\"knownErrorTitle\">" + knownError.title + "</label>\n            <label class=\"knownErrorStatus\">" + knownError.status + "</label>\n            <label class=\"knownErrorName\">" + knownError.name + "</label>\n            <label class=\"knownErrorCategory\">" + knownError.category + "</label>\n            \n            <input class=\"showDetail\" type=\"submit\" value=\"Detail\"/>\n            </div>\n        </li>";
         }
 
@@ -68714,7 +68723,10 @@ var _class = function () {
     }, {
         key: renderDetailError,
         value: function value(detailError) {
+            //JSON.parse(detailError)
             console.log("detail render", detailError);
+            console.log('TITLE: ' + detailError.valueOf());
+            console.log('NAME: ' + detailError.name);
             return "<input class=\"back-button\" type=\"submit\" value=\"Back\"/>\n                <h1>" + detailError.title + "</h1>\n                    <select class=\"new-error-status\">\n                    </select>                    \n                <h3>" + detailError.name + "</h3>                    \n                <h3>" + detailError.category + "</h3>                   \n                <input class=\"actual-worklog-text\">Worklog Text</ipnut> \n        <input class=\"add-worklog\" type=\"submit\" value=\"Add Worklog\"/>";
         }
 

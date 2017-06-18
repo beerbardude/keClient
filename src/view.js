@@ -116,6 +116,7 @@ export default class {
     * @param {*a known error} knownError 
     */
     [renderKnownError](knownError){
+        console.log(knownError)
         return `<div class="knownErrorDiv">
             <li class="knownErrorLi" >
             <label class="knownErrorId">${knownError.id}</label>
@@ -195,7 +196,10 @@ export default class {
 
     //todo : get select values
     [renderDetailError](detailError) {
+        //JSON.parse(detailError)
         console.log("detail render", detailError)
+        console.log('TITLE: '+ detailError.valueOf())
+        console.log('NAME: '+detailError.name)
         return `<input class="back-button" type="submit" value="Back"/>
                 <h1>${detailError.title}</h1>
                     <select class="new-error-status">

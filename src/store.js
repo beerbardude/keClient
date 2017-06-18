@@ -26,17 +26,24 @@ export default class Store {
     getKnownErrorById(id) {
         console.log(id)
         let headers = new Headers({
+            'Content-Type': 'application/json',
             'Accept': 'application/json'
         })
 
+        let id_string = id.id
+        console.log('id_string:' +id_string)
+        console.log('id stringify' + JSON.stringify(id.id))
+        console.log('http://localhost:3000/ke/'+id_string)
+
         //todo : fetch url anpassen
-        return fetch(`http://localhost:3000/ke/:id/`, {
+        return fetch(`http://localhost:3000/ke/${(id_string)}`, {
             method: 'GET',
             headers: headers,
         }).then((resp)=>{
             if(resp.ok){
-                resp.json()
-                //return Promise.resolve(resp)
+                return resp.json()
+                console.log(resp.json())
+                //return Promise.resolve(resp.json())
             }else{
                 return Promise.reject(resp)
             }
