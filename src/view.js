@@ -15,7 +15,7 @@ const onAddWorklogClick = Symbol()
 export default class {
     constructor($doc){
         this.$doc = $doc
-        this.$list = this.$doc.querySelector(".error-list")
+        this.$list = this.$doc.querySelector(".list-group")
 
         let $inputTitle = $doc.querySelector(".new-error-title")
         let $inputStatus = $doc.querySelector(".new-error-status")
@@ -89,7 +89,7 @@ export default class {
      * @param {*a known error} knownErrors 
      */
     renderKnownErrors(knownErrors){
-        let $list = this.$doc.querySelector(".error-list")
+        let $list = this.$doc.querySelector(".list-group")
         $list.innerHTML = knownErrors.map(this[renderKnownError])
 
         let $knownErrorDivs = $list.querySelectorAll(".knownErrorDiv")
@@ -118,14 +118,15 @@ export default class {
     [renderKnownError](knownError){
         console.log(knownError)
         return `<div class="knownErrorDiv">
-            <li class="knownErrorLi" >
-            <label class="knownErrorId">${knownError.id}</label>
-            <label class="knownErrorTitle">${knownError.title}</label>
-            <label class="knownErrorStatus">${knownError.status}</label>
-            <label class="knownErrorName">${knownError.name}</label>
-            <label class="knownErrorCategory">${knownError.category}</label>
-            
+            <li class="list-group-item" >
+            <label class="knownErrorId">${knownError.id} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </label>
+            <label class="knownErrorTitle">${knownError.title} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
+            <label class="knownErrorStatus">${knownError.status} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
+            <label class="knownErrorName">${knownError.name} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
+            <label class="knownErrorCategory">${knownError.category} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
+            <span class="pull-right">
             <input class="showDetail" type="submit" value="Detail"/>
+            </span>
             </div>
         </li>`;
     }    
