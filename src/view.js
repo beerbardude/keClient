@@ -15,6 +15,7 @@ const onAddWorklogClick = Symbol()
 export default class {
     constructor($doc){
         this.$doc = $doc
+        /*this.$table = this.doc.querySelector(".table")*/
         this.$list = this.$doc.querySelector(".list-group")
 
         let $inputTitle = $doc.querySelector(".new-error-title")
@@ -89,7 +90,17 @@ export default class {
      * @param {*a known error} knownErrors 
      */
     renderKnownErrors(knownErrors){
-        let $list = this.$doc.querySelector(".list-group")
+
+/*        let $table = this.doc.querySelector(".table")
+        $table.innerHTML = knownErrors.map(this[renderKnownError])
+
+        let $tr = $table.querySelector(".tr")
+        $tr.forEach(tr => {
+            $table.append(tr)
+        })*/
+
+
+      let $list = this.$doc.querySelector(".list-group")
         $list.innerHTML = knownErrors.map(this[renderKnownError])
 
         let $knownErrorDivs = $list.querySelectorAll(".knownErrorDiv")
@@ -117,6 +128,16 @@ export default class {
     */
     [renderKnownError](knownError){
         console.log(knownError)
+
+/*        return `<tr class=".tr">
+                    <td>${knownError.id}</td>
+                    <td>${knownError.title}</td>
+                    <td>${knownError.name}</td>
+                    <td>${knownError.status}</td>
+                    <td>${knownError.category}</td>
+                </tr>`*/
+
+
         return `<div class="knownErrorDiv">
             <li class="list-group-item" >
             <label class="knownErrorId">${knownError.id} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </label>
@@ -127,9 +148,9 @@ export default class {
             <span class="pull-right">
             <input class="showDetail" type="submit" value="Detail"/>
             </span>
-            </div>
-        </li>`;
-    }    
+            </li>
+            </div>`;
+    }
 
     /**
      * renders the statuses for selection

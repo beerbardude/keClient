@@ -68513,6 +68513,7 @@ var _class = function () {
         _classCallCheck(this, _class);
 
         this.$doc = $doc;
+        /*this.$table = this.doc.querySelector(".table")*/
         this.$list = this.$doc.querySelector(".list-group");
 
         var $inputTitle = $doc.querySelector(".new-error-title");
@@ -68596,6 +68597,14 @@ var _class = function () {
         value: function renderKnownErrors(knownErrors) {
             var _this = this;
 
+            /*        let $table = this.doc.querySelector(".table")
+                    $table.innerHTML = knownErrors.map(this[renderKnownError])
+            
+                    let $tr = $table.querySelector(".tr")
+                    $tr.forEach(tr => {
+                        $table.append(tr)
+                    })*/
+
             var $list = this.$doc.querySelector(".list-group");
             $list.innerHTML = knownErrors.map(this[renderKnownError]);
 
@@ -68629,8 +68638,17 @@ var _class = function () {
     }, {
         key: renderKnownError,
         value: function value(knownError) {
-            console.log(knownError);
-            return "<div class=\"knownErrorDiv\">\n            <li class=\"list-group-item\" >\n            <label class=\"knownErrorId\">" + knownError.id + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </label>\n            <label class=\"knownErrorTitle\">" + knownError.title + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>\n            <label class=\"knownErrorStatus\">" + knownError.status + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>\n            <label class=\"knownErrorName\">" + knownError.name + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>\n            <label class=\"knownErrorCategory\">" + knownError.category + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>\n            <span class=\"pull-right\">\n            <input class=\"showDetail\" type=\"submit\" value=\"Detail\"/>\n            </span>\n            </div>\n        </li>";
+            console.log(knownError
+
+            /*        return `<tr class=".tr">
+                                <td>${knownError.id}</td>
+                                <td>${knownError.title}</td>
+                                <td>${knownError.name}</td>
+                                <td>${knownError.status}</td>
+                                <td>${knownError.category}</td>
+                            </tr>`*/
+
+            );return "<div class=\"knownErrorDiv\">\n            <li class=\"list-group-item\" >\n            <label class=\"knownErrorId\">" + knownError.id + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </label>\n            <label class=\"knownErrorTitle\">" + knownError.title + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>\n            <label class=\"knownErrorStatus\">" + knownError.status + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>\n            <label class=\"knownErrorName\">" + knownError.name + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>\n            <label class=\"knownErrorCategory\">" + knownError.category + " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>\n            <span class=\"pull-right\">\n            <input class=\"showDetail\" type=\"submit\" value=\"Detail\"/>\n            </span>\n            </li>\n            </div>";
         }
 
         /**
