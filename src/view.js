@@ -77,6 +77,11 @@ export default class {
 
 
     [onAddWorklogClick](event) {
+        let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
+        $hiddenWorklogDiv.style.display = 'table'
+        let $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title")
+        let $actualWorklogText = this.$main.querySelector(".actual-worklog-text")
+
         let id = arguments[0]
         let name = arguments[0].name
         let category = arguments[0].category
@@ -110,6 +115,7 @@ export default class {
      * @param {*a known error} knownErrors 
      */
     renderKnownErrors(knownErrors){
+        console.log(knownErrors)
         let $table = this.$doc.querySelector("table")
         $table.innerHTML = knownErrors.map(this[renderKnownError])
 
@@ -135,6 +141,7 @@ export default class {
     * @param {*a known error} knownError 
     */
     [renderKnownError](knownError){
+        console.log('knownE',knownError)
         return `<tr class="known-error">
                     <td class="known-error-id">${knownError.id}</td>
                     <td class="known-error-title"><a href="#">${knownError.title}</a></td>
@@ -196,52 +203,52 @@ export default class {
     }
 
     // todo : get promise value working
-    renderDetailErrors(detailError, stats) {
-        //this.$doc.innerHTML = detailError.map(this[renderDetailError])
-        detailError = {
-            "id" : 124,
-            "title": "Keine LTE Verbindung",
-            "name": "author eins",
-            "description" : "",
-            "category" : "Mobile ID",
-            "status" : "Pending"
-        }
+    renderDetailErrors(detailError) {
+        // detailError = {
+        //     "id" : 124,
+        //     "title": "Keine LTE Verbindung",
+        //     "name": "1",
+        //     "description" : "",
+        //     "category" : "Mobile ID",
+        //     "status" : "Pending"
+        // }
 
-        let options = this[renderStat](stats)
+        //let options = this[renderStat](stats)
         //todo : status selection richtige option anzeigen
-        this.$main.innerHTML = this[renderDetailError](detailError, options)
+        console.log('detailError',detailError)
+        this.$main.innerHTML = detailError.map(this[renderDetailError])
 
-        let $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title")
-        let $actualWorklogText = this.$main.querySelector(".actual-worklog-text")
         let $addWorkLogButton = this.$main.querySelector(".add-worklog")
-        $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError, $actualWorklogTitle, $actualWorklogText))
+        $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError)) //, $actualWorklogTitle, $actualWorklogText))
     }
 
-    [renderDetailError](detailError, optionValues) {
+    [renderDetailError](dError) {
+        console.log('dError', dError)
         return `<div class="known-error-detail">
                     <table class="table">
                     <thead>
                         <tr>
-                            <th>${detailError.title}</th>
+                            <th>${dError.title}</th>
                             <th><select class="new-error-status">
-                                ${optionValues}
+                                
                                 </select></th>
-                            <th>${detailError.name}</th>
-                            <th>${detailError.category}</th>
+                            <th>${dError.id_added_by}</th>
+                            <th>${dError.id_category}</th>
                         </tr>
                     </thead>
-                    <tr>
-                        <td colspan="4"><textarea cols="50" class="actual-worklog-title" placeholder="Title" ></textarea></td> 
-                    </tr>
-                    <tr>
-                        <td colspan="4"><textarea cols="100" rows="10" class="actual-worklog-text" placeholder="Worklog Text" ></textarea></td> 
-                    </tr>
+                    <div class="hidden-worklog" style="display: none;">
+                        <tr>
+                            <td colspan="4"><textarea cols="50" class="actual-worklog-title" placeholder="Title" ></textarea></td> 
+                        </tr>
+                        <tr>
+                            <td colspan="4"><textarea cols="100" rows="10" class="actual-worklog-text" placeholder="Worklog Text" ></textarea></td> 
+                        </tr>
+                    </div>
                     <tr>
                         <td colspan="4"><input class="add-worklog" type="submit" value="Add Worklog"/></td>
                     </tr>
-                   </table>
-               </div>
-               <div style="width: 600px;" class="worklog-list-div"><table class="table table-hover"></table></div>`;
+               </table>
+               <div style="width: 80%; margin-left:auto; margin-right: auto;" class="worklog-list-div"><table class="table table-hover"></table></div>`;
     }
 
     //todo: append worklogs
@@ -299,7 +306,6 @@ export default class {
     renderError(error) {
         let errorDiv = this.$doc.querySelector(".errorDiv")
         errorDiv.innerHTML = "Error " + error
-        console.log("DEBUG", error)
     }
 }
 

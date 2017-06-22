@@ -68225,15 +68225,18 @@ var _class = function () {
             // todo : resolve promise
             var view = this.view;
             // console.log(view)
-            //this.store.getKnownErrorById(knownErrorId)
-            // .then(view.renderDetailErrors().bind(view))
-            // .catch(view.renderError().bind(view))
+            this.store.getKnownErrorById(knownErrorId).then(function (kn) {
+                //console.log("kn", kn)
+                view.renderDetailErrors(kn);
+            }).catch(view.renderError.bind(view)
 
             // todo: OR get promise value
-            var detError = this.store.getKnownErrorById(knownErrorId);
-            var stats = this.store.getStats().then(this.view.renderStats.bind(this.view)).catch(view.renderError.bind(view));
+            // let detError = this.store.getKnownErrorById(knownErrorId)
+            // let stats = this.store.getStats()
+            //                 .then(this.view.renderStats.bind(this.view))
+            //                 .catch(view.renderError.bind(view))
 
-            this.view.renderDetailErrors(detError, stats
+            //this.view.renderDetailErrors(detError, stats)
 
             // todo : worklogs
             );var worklogs = 1;
@@ -68288,8 +68291,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var request = require('request');
 
 var server = "http://localhost:3000/";
-var localIndex = "http://localhost:8008/src/index.html";
 //const server = "http://10.43.18.170:3000/"
+var localIndex = "http://localhost:8008/src/index.html";
 
 var Store = function () {
     function Store() {
@@ -68341,7 +68344,7 @@ var Store = function () {
         value: function addKnownError(knownError) {
             request.post(server + 'add', { json: knownError }, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    console.log('replace');
+                    window.alert("Added Error");
                     window.location.replace(localIndex);
                 } else {
                     console.log("error", knownError);
@@ -68575,6 +68578,11 @@ var _class = function () {
     }, {
         key: onAddWorklogClick,
         value: function value(event) {
+            var $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog");
+            $hiddenWorklogDiv.style.display = 'table';
+            var $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title");
+            var $actualWorklogText = this.$main.querySelector(".actual-worklog-text");
+
             var id = arguments[0];
             var name = arguments[0].name;
             var category = arguments[0].category;
@@ -68616,6 +68624,7 @@ var _class = function () {
         value: function renderKnownErrors(knownErrors) {
             var _this = this;
 
+            console.log(knownErrors);
             var $table = this.$doc.querySelector("table");
             $table.innerHTML = knownErrors.map(this[renderKnownError]);
 
@@ -68639,6 +68648,7 @@ var _class = function () {
     }, {
         key: renderKnownError,
         value: function value(knownError) {
+            console.log('knownE', knownError);
             return "<tr class=\"known-error\">\n                    <td class=\"known-error-id\">" + knownError.id + "</td>\n                    <td class=\"known-error-title\"><a href=\"#\">" + knownError.title + "</a></td>\n                    <td class=\"known-error-name\">" + knownError.name + "</td>\n                    <td class=\"known-error-status\">" + knownError.status + "</td>\n                    <td class=\"known-error-category\">" + knownError.category + "</td>\n                </tr>";
         }
 
@@ -68715,30 +68725,30 @@ var _class = function () {
 
     }, {
         key: "renderDetailErrors",
-        value: function renderDetailErrors(detailError, stats) {
-            //this.$doc.innerHTML = detailError.map(this[renderDetailError])
-            detailError = {
-                "id": 124,
-                "title": "Keine LTE Verbindung",
-                "name": "author eins",
-                "description": "",
-                "category": "Mobile ID",
-                "status": "Pending"
-            };
+        value: function renderDetailErrors(detailError) {
+            // detailError = {
+            //     "id" : 124,
+            //     "title": "Keine LTE Verbindung",
+            //     "name": "1",
+            //     "description" : "",
+            //     "category" : "Mobile ID",
+            //     "status" : "Pending"
+            // }
 
-            var options = this[renderStat](stats
-            //let options = `<option value="${detailError.status}">${detailError.status}</option>`;
-            );this.$main.innerHTML = this[renderDetailError](detailError, options);
+            //let options = this[renderStat](stats)
+            //todo : status selection richtige option anzeigen
+            console.log('detailError', detailError);
+            this.$main.innerHTML = detailError.map(this[renderDetailError]);
 
-            var $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title");
-            var $actualWorklogText = this.$main.querySelector(".actual-worklog-text");
             var $addWorkLogButton = this.$main.querySelector(".add-worklog");
-            $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError, $actualWorklogTitle, $actualWorklogText));
+            $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError) //, $actualWorklogTitle, $actualWorklogText))
+            );
         }
     }, {
         key: renderDetailError,
-        value: function value(detailError, optionValues) {
-            return "<div class=\"known-error-detail\">\n                    <table class=\"table\">\n                    <thead>\n                        <tr>\n                            <th>" + detailError.title + "</th>\n                            <th><select class=\"new-error-status\">\n                                " + optionValues + "\n                                </select></th>\n                            <th>" + detailError.name + "</th>\n                            <th>" + detailError.category + "</th>\n                        </tr>\n                    </thead>\n                    <tr>\n                        <td colspan=\"4\"><textarea cols=\"50\" class=\"actual-worklog-title\" placeholder=\"Title\" ></textarea></td> \n                    </tr>\n                    <tr>\n                        <td colspan=\"4\"><textarea cols=\"100\" rows=\"10\" class=\"actual-worklog-text\" placeholder=\"Worklog Text\" ></textarea></td> \n                    </tr>\n                    <tr>\n                        <td colspan=\"4\"><input class=\"add-worklog\" type=\"submit\" value=\"Add Worklog\"/></td>\n                    </tr>\n                   </table>\n               </div>\n               <div style=\"width: 600px;\" class=\"worklog-list-div\"><table class=\"table table-hover\"></table></div>";
+        value: function value(dError) {
+            console.log('dError', dError);
+            return "<div class=\"known-error-detail\">\n                    <table class=\"table\">\n                    <thead>\n                        <tr>\n                            <th>" + dError.title + "</th>\n                            <th><select class=\"new-error-status\">\n                                \n                                </select></th>\n                            <th>" + dError.id_added_by + "</th>\n                            <th>" + dError.id_category + "</th>\n                        </tr>\n                    </thead>\n                    <div class=\"hidden-worklog\" style=\"display: none;\">\n                        <tr>\n                            <td colspan=\"4\"><textarea cols=\"50\" class=\"actual-worklog-title\" placeholder=\"Title\" ></textarea></td> \n                        </tr>\n                        <tr>\n                            <td colspan=\"4\"><textarea cols=\"100\" rows=\"10\" class=\"actual-worklog-text\" placeholder=\"Worklog Text\" ></textarea></td> \n                        </tr>\n                    </div>\n                    <tr>\n                        <td colspan=\"4\"><input class=\"add-worklog\" type=\"submit\" value=\"Add Worklog\"/></td>\n                    </tr>\n               </table>\n               <div style=\"width: 80%; margin-left:auto; margin-right: auto;\" class=\"worklog-list-div\"><table class=\"table table-hover\"></table></div>";
         }
 
         //todo: append worklogs
@@ -68796,7 +68806,6 @@ var _class = function () {
         value: function renderError(error) {
             var errorDiv = this.$doc.querySelector(".errorDiv");
             errorDiv.innerHTML = "Error " + error;
-            console.log("DEBUG", error);
         }
     }]);
 

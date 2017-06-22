@@ -41,17 +41,19 @@ export default class {
         // todo : resolve promise
         let view = this.view
         // console.log(view)
-        //this.store.getKnownErrorById(knownErrorId)
-            // .then(view.renderDetailErrors().bind(view))
-            // .catch(view.renderError().bind(view))
+        this.store.getKnownErrorById(knownErrorId)
+        .then((kn) => {
+            //console.log("kn", kn)
+            view.renderDetailErrors(kn)
+        }).catch(view.renderError.bind(view))
 
         // todo: OR get promise value
-        let detError = this.store.getKnownErrorById(knownErrorId)
-        let stats = this.store.getStats()
-                        .then(this.view.renderStats.bind(this.view))
-                        .catch(view.renderError.bind(view))
+        // let detError = this.store.getKnownErrorById(knownErrorId)
+        // let stats = this.store.getStats()
+        //                 .then(this.view.renderStats.bind(this.view))
+        //                 .catch(view.renderError.bind(view))
 
-        this.view.renderDetailErrors(detError, stats)
+        //this.view.renderDetailErrors(detError, stats)
 
         // todo : worklogs
         let worklogs = 1
