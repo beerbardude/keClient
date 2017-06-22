@@ -15,7 +15,7 @@ const onAddWorklogClick = Symbol()
 export default class {
     constructor($doc){
         this.$doc = $doc
-        /*this.$table = this.doc.querySelector(".table")*/
+        this.$main = this.$doc.querySelector("main")
         this.$list = this.$doc.querySelector(".list-group")
 
         let $inputTitle = $doc.querySelector(".new-error-title")
@@ -42,7 +42,7 @@ export default class {
     }
 
     registerAddWorklogClick(handler) {
-        this.onAddWorklockClick = handler
+        this.onAddWorklogClick = handler
     }
 
 
@@ -77,43 +77,25 @@ export default class {
 
 
     [onAddWorklogClick](event) {
+        let id = arguments[0]
+        let name = arguments[0].name
+        let category = arguments[0].category
+        let title = arguments[1].value
+        let description = arguments[2].value
+
         let worklogRecord =  {
-            id : arguments[0],
-            text : arguments[1]
+            id_known_error : id,
+            title : title,
+            description : description,
+            name : name,
+            category: category
         }
         this.onAddWorklogClick(worklogRecord)
     }
 
     /**
-     * renders all known errors
-     * adds eventlistener to buttons
-     * @param {*a known error} knownErrors 
-     */
-    renderKnownErrors(knownErrors){
-
-/*        let $table = this.doc.querySelector(".table")
-        $table.innerHTML = knownErrors.map(this[renderKnownError])
-
-        let $tr = $table.querySelector(".tr")
-        $tr.forEach(tr => {
-            $table.append(tr)
-        })*/
-
-
-      let $list = this.$doc.querySelector(".list-group")
-        $list.innerHTML = knownErrors.map(this[renderKnownError])
-
-        let $knownErrorDivs = $list.querySelectorAll(".knownErrorDiv")
-        $knownErrorDivs.forEach(div => {
-            let knownErrorId = div.querySelector(".knownErrorId")
-            let detailButton = div.querySelector(".showDetail")
-            detailButton.addEventListener('click', this[onShowDetailClick].bind(this, knownErrorId.innerHTML))
-        });
-    }
-
-    /**
      * adds a known error to the error-list
-     * @param {*a known error} knownError 
+     * @param {*a known error} knownError
      */
     addKnownError(knownError) {
         let $div = document.createElement('div')
@@ -123,33 +105,43 @@ export default class {
     }
 
     /**
+     * renders all known errors
+     * adds eventlistener to buttons
+     * @param {*a known error} knownErrors 
+     */
+    renderKnownErrors(knownErrors){
+        let $table = this.$doc.querySelector("table")
+        $table.innerHTML = knownErrors.map(this[renderKnownError])
+
+        let $tr = $table.querySelectorAll(".known-error")
+        $tr.forEach(tr => {
+            let knownErrorId = tr.querySelector(".known-error-id")
+            let knownErrorTitle = tr.querySelector(".known-error-title")
+            let knownErrorName = tr.querySelector(".known-error-name")
+            let knownErrorStatus = tr.querySelector(".known-error-status")
+            let knownErrorCategory = tr.querySelector(".known-error-category")
+            let detailButton = tr.querySelector("a")
+            detailButton.addEventListener('click', this[onShowDetailClick].bind(this,
+                knownErrorId.innerHTML,
+            knownErrorTitle.innerHTML,
+            knownErrorName.innerHTML,
+            knownErrorStatus.innerHTML,
+            knownErrorCategory.innerHTML))
+        })
+    }
+
+    /**
     * renders a known error
     * @param {*a known error} knownError 
     */
     [renderKnownError](knownError){
-        console.log(knownError)
-
-/*        return `<tr class=".tr">
-                    <td>${knownError.id}</td>
-                    <td>${knownError.title}</td>
-                    <td>${knownError.name}</td>
-                    <td>${knownError.status}</td>
-                    <td>${knownError.category}</td>
-                </tr>`*/
-
-
-        return `<div class="knownErrorDiv">
-            <li class="list-group-item" >
-            <label class="knownErrorId">${knownError.id} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </label>
-            <label class="knownErrorTitle">${knownError.title} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
-            <label class="knownErrorStatus">${knownError.status} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
-            <label class="knownErrorName">${knownError.name} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
-            <label class="knownErrorCategory">${knownError.category} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
-            <span class="pull-right">
-            <input class="showDetail" type="submit" value="Detail"/>
-            </span>
-            </li>
-            </div>`;
+        return `<tr class="known-error">
+                    <td class="known-error-id">${knownError.id}</td>
+                    <td class="known-error-title"><a href="#">${knownError.title}</a></td>
+                    <td class="known-error-name">${knownError.name}</td>
+                    <td class="known-error-status">${knownError.status}</td>
+                    <td class="known-error-category">${knownError.category}</td>
+                </tr>`
     }
 
     /**
@@ -204,46 +196,88 @@ export default class {
     }
 
     // todo : get promise value working
-    renderDetailErrors(detailError) {
+    renderDetailErrors(detailError, stats) {
         //this.$doc.innerHTML = detailError.map(this[renderDetailError])
-        console.log('det',detailError)
-        window.document.body.innerHTML = this[renderDetailError](detailError)
+        detailError = {
+            "id" : 124,
+            "title": "Keine LTE Verbindung",
+            "name": "author eins",
+            "description" : "",
+            "category" : "Mobile ID",
+            "status" : "Pending"
+        }
 
-        let errorId = detailError.id
+        let options = this[renderStat](stats)
+        //todo : status selection richtige option anzeigen
+        this.$main.innerHTML = this[renderDetailError](detailError, options)
 
-        let worklog = this.$doc.querySelector("actual-worklog-text")
-        let addWorkLogButton = this.$doc.querySelector(".add-worklog")
-        addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, errorId, worklog))
+        let $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title")
+        let $actualWorklogText = this.$main.querySelector(".actual-worklog-text")
+        let $addWorkLogButton = this.$main.querySelector(".add-worklog")
+        $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError, $actualWorklogTitle, $actualWorklogText))
     }
 
-    //todo : get select values
-    [renderDetailError](detailError) {
-        //JSON.parse(detailError)
-        console.log("detail render", detailError)
-        console.log('TITLE: '+ detailError.valueOf())
-        console.log('NAME: '+detailError.name)
-        return `<input class="back-button" type="submit" value="Back"/>
-                <h1>${detailError.title}</h1>
-                    <select class="new-error-status">
-                    </select>                    
-                <h3>${detailError.name}</h3>                    
-                <h3>${detailError.category}</h3>                   
-                <input class="actual-worklog-text">Worklog Text</ipnut> 
-        <input class="add-worklog" type="submit" value="Add Worklog"/>`;
+    [renderDetailError](detailError, optionValues) {
+        return `<div class="known-error-detail">
+                    <table class="table">
+                    <thead>
+                        <tr>
+                            <th>${detailError.title}</th>
+                            <th><select class="new-error-status">
+                                ${optionValues}
+                                </select></th>
+                            <th>${detailError.name}</th>
+                            <th>${detailError.category}</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td colspan="4"><textarea cols="50" class="actual-worklog-title" placeholder="Title" ></textarea></td> 
+                    </tr>
+                    <tr>
+                        <td colspan="4"><textarea cols="100" rows="10" class="actual-worklog-text" placeholder="Worklog Text" ></textarea></td> 
+                    </tr>
+                    <tr>
+                        <td colspan="4"><input class="add-worklog" type="submit" value="Add Worklog"/></td>
+                    </tr>
+                   </table>
+               </div>
+               <div style="width: 600px;" class="worklog-list-div"><table class="table table-hover"></table></div>`;
     }
 
     //todo: append worklogs
     showWorklogs(worklogs) {
-        let worklogList = this[renderWorklogs](worklogs)
-        this.$doc.innerHTML = worklogList
+        let worklogsDummy = [
+            {
+                "id": 1,
+                "name" : "Alexander",
+                "title": "Eintrag verschwindet",
+                "description": "Wenn ein eintrag gemacht wird...dsfsfjoewfjpwefjpswff"
+            },
+            {
+                "id": 2,
+                "name" : "Armin",
+                "title": "SDFew fwef",
+                "description": "dsfsdgfs cfsdf ewtf wefsgvadfg qagra sdfgb sgsg werg wgb wtghewr gbwtb wtg dsbwr gh"
+            },
+            {
+                "id": 3,
+                "name" : "Egon",
+                "title": "DFjokldfE Fedf",
+                "description": "EWft treffi WEfgjyRÖGjka#4ptfoik areg" +
+                "qi rdsfsdgfs cfsdf ewtf wefsgvadfg qagra sdfgb sgsg werg wgb wtghewr gbwtb wtg dsbwr gh"
+            }
+        ]
+
+        let workloglist = this.$main.querySelector(".worklog-list-div")
+        let table = workloglist.querySelector("table")
+        table.innerHTML = worklogsDummy.map(this[renderWorklogs])
     }
 
-    // todo: render worklog
     [renderWorklogs](worklog) {
-        return `<li data-id="${worklog.id}">
-            <label>${worklog.title}</label>
-            <button class="showWorklog" type="submit">+</button>
-        </li>`;
+        return `<tr><th>${worklog.title}</th><th>${worklog.name}</th></tr>
+                <tr><td>${worklog.description}<td></tr>
+                <tr><td></td></tr>`;
+        //<button class="showWorklog" type="submit">+</button>
     }
 
     // todo: show wl detail

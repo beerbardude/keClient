@@ -4,6 +4,7 @@ let request = require('request');
 
 const server = "http://localhost:3000/"
 //const server = "http://10.43.18.170:3000/"
+const localIndex = "http://localhost:8008/src/index.html"
 
 export default class Store {
 
@@ -31,9 +32,6 @@ export default class Store {
         })
 
         let id_string = id.id
-        console.log('id_string:' +id_string)
-        console.log('id stringify' + JSON.stringify(id.id))
-        console.log('http://localhost:3000/ke/'+id_string)
 
         //todo : fetch url anpassen
         return fetch(`http://localhost:3000/ke/${(id_string)}`, {
@@ -42,8 +40,6 @@ export default class Store {
         }).then((resp)=>{
             if(resp.ok){
                 return resp.json()
-                console.log(resp.json())
-                //return Promise.resolve(resp.json())
             }else{
                 return Promise.reject(resp)
             }
@@ -56,8 +52,8 @@ export default class Store {
             {json:knownError},
             function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    console.log('replace')
-                    window.location.replace('http://localhost:8008/src/index.html')
+                    window.alert("Added Error")
+                    window.location.replace(localIndex)
                 }
                 else {
                     console.log("error", knownError)
@@ -69,12 +65,12 @@ export default class Store {
     // todo : check server method
     addWorklog(worklog) {
         request.post(
-            server + 'addWl',
+            server + 'add_wl',
             {json:worklog},
             function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    console.log('replace')
-                    window.location.replace('http://localhost:8008/src/index.html')
+                    window.alert("Worklog Added")
+                    window.location.replace(localIndex)
                 }
                 else {
                     console.log("error", worklog)

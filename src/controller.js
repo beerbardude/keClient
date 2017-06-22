@@ -32,7 +32,6 @@ export default class {
 
 
     onAddKnownError(knownError){
-        console.log(knownError)
         this.store.addKnownError(knownError)
     }
 
@@ -48,12 +47,16 @@ export default class {
 
         // todo: OR get promise value
         let detError = this.store.getKnownErrorById(knownErrorId)
-        this.view.renderDetailErrors(detError)
+        let stats = this.store.getStats()
+                        .then(this.view.renderStats.bind(this.view))
+                        .catch(view.renderError.bind(view))
 
+        this.view.renderDetailErrors(detError, stats)
 
         // todo : worklogs
-        //let worklogs = this.store.getWorklogsFromKnownError(knownError)
-        //this.view.showWorklogs(worklogs)
+        let worklogs = 1
+            //this.store.getWorklogsFromKnownError(knownErrorId)
+        this.view.showWorklogs(worklogs)
     }
 
 
