@@ -134,7 +134,7 @@ export default class {
      */
     renderKnownErrors(knownErrors){
         let $table = this.$doc.querySelector("table")
-        $table.innerHTML = knownErrors.map(this[renderKnownError])
+        $table.innerHTML = knownErrors.map(this[renderKnownError]).join('')
 
         let $tr = $table.querySelectorAll(".known-error")
         $tr.forEach(tr => {
@@ -182,7 +182,7 @@ export default class {
      */
     renderStats(stats){
         let $statSelection = this.$doc.querySelector(".new-error-status")
-        $statSelection.innerHTML = stats.map(this[renderStat])
+        $statSelection.innerHTML = stats.map(this[renderStat]).join('')
     }
 
     /**
@@ -203,7 +203,7 @@ export default class {
      */
     renderCategories(categories){
         let $categorySelection = this.$doc.querySelector(".new-error-category")
-        $categorySelection.innerHTML = categories.map(this[renderCategory])
+        $categorySelection.innerHTML = categories.map(this[renderCategory]).join('')
     }
 
     /**
@@ -220,7 +220,7 @@ export default class {
      */
     renderNames(names){
         let $nameSelection = this.$doc.querySelector(".new-error-name")
-        $nameSelection.innerHTML = names.map(this[renderName])
+        $nameSelection.innerHTML = names.map(this[renderName]).join('')
     }
 
     /**
