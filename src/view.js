@@ -15,6 +15,7 @@ const onAddErrorClick = Symbol()
 const onShowDetailClick = Symbol()
 const onShowWorklogDetailClick = Symbol()
 const onAddWorklogClick = Symbol()
+const onsaveWorklogClick = Symbol()
 
 export default class {
     constructor($doc){
@@ -39,10 +40,6 @@ export default class {
 
     registerShowDetailErrorHandler(handler) {
         this.onShowDetailErrorHandler = handler
-    }
-
-    registerShowWorklogDetailHandler(handler) {
-        this.onShowWorklogDetailClick = handler
     }
 
     registerAddWorklogClick(handler) {
@@ -89,13 +86,6 @@ export default class {
         this.onShowDetailErrorHandler(knownError)
     }
 
-    [onShowWorklogDetailClick](event) {
-        let worklog = {
-            id: event.id
-        }
-        this.onShowWorklogDetailClick(worklog)
-    }
-
 
     [onAddWorklogClick](event) {
         let id = arguments[0]
@@ -134,9 +124,11 @@ export default class {
      */
     renderKnownErrors(knownErrors){
         let $table = this.$doc.querySelector("table")
-        $table.innerHTML = knownErrors.map(this[renderKnownError]).join('')
 
-        let $tr = $table.querySelectorAll(".known-error")
+        let renderedErrors = knownErrors.map(this[renderKnownError]).join('')
+        $table.innerHTML = $table.innerHTML.concat(renderedErrors)
+
+            let $tr = $table.querySelectorAll(".known-error")
         $tr.forEach(tr => {
             let knownErrorId = tr.querySelector(".known-error-id")
             let knownErrorTitle = tr.querySelector(".known-error-title")
@@ -231,6 +223,10 @@ export default class {
         return `<option value="${name.id}">${name.name}</option>`;
     }
 
+    changeAddButtonText(){
+        this.$doc.querySelector(".add-button").style.display="none"
+    }
+
     // todo : get worklogs list
     renderDetailErrors(worklogs, detailError, stats) {
         this.$doc.querySelector('h1').innerHTML = 'Worklogs'
@@ -248,60 +244,43 @@ export default class {
             }
         })
 
+        let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
+        $hiddenWorklogDiv.innerHTML = this.rendernewWorklog()
+
+        let $saveButton = $hiddenWorklogDiv.querySelector(".save-worklog")
+        let $actualWorklogTitle = this.$main.querySelector("#title")
+        let $actualWorklogText = this.$main.querySelector("#desciption")
+
+//        $saveButton.addEventListener('click', this[onsaveWorklogClick].bind(this, $actualWorklogTitle, $actualWorklogText))
+
+
         let worklogList = this.$main.querySelector('.worklog-list')
         worklogList.innerHTML = worklogs.map(this[renderWorklogs]).join('')
 
-        let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
-        let $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title")
-        let $actualWorklogText = this.$main.querySelector(".actual-worklog-text")
-
-        let $addWorkLogButton = this.$main.querySelector(".add-worklog")
-        $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError)) //, $actualWorklogTitle, $actualWorklogText))
+        let $addWorkLogButton = this.$main.querySelector("#add-worklog")
+        $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError))
     }
 
     [renderDetailError](dError) {
         return `<table class="table">
                     <thead>
                         <tr>
-                            <th>${dError.id}</th>
-                            <th>${dError.title}</th>
-                            <th><select class="new-error-status">
-                            </select></th>
-                            <th>${dError.nameText}</th>
-                            <th>${dError.catText}</th>
+                            <th><h4>${dError.id}</h4></th>
+                            <th><h4><b>${dError.title}</b></h4></th>
+                            <th><h4><select class="new-error-status">
+                            </select></h4></th>
+                            <th><h4>${dError.nameText}</h4></th>
+                            <th><h4>${dError.catText}</h4></th>
                         </tr>
-                    </thead>
-                    <tr>
-                        <td colspan="5"><input class="add-worklog" type="submit" value="Add Worklog"/></td>
-                    </tr>
-                </table><div class="worklog-list"></div>`;
+                    </thead>                   
+                </table>
+                <div class="text-center"><button type="button" id="add-worklog" class="btn btn-primary btn-lg">Add Worklog</button></div>
+                <br>
+                <div class="hidden-worklog"></div>
+                <br>
+                <br>
+                <div class="worklog-list"></div>`;
     }
-
-    [renderDetailWorklog](worklog) {
-        return `<div class="known-error-detail">
-                    <table class="table">
-                    <thead>
-                        <tr>
-                            <th>${worklog.title}</th>
-                            <th><select class="new-error-status">
-                                
-                                </select></th>
-                            <th>${worklog.id}</th>
-                            <th>${worklog.id_category}</th>
-                        </tr>
-                    </thead>
-               </table>
-               <div style="width: 80%; margin-left:auto; margin-right: auto;" class="worklog-list-div"><table class="table table-hover"></table></div>`;
-    }
-//
-// <div class="hidden-worklog" style="display: none;">
-//         <tr>
-//         <td colspan="4"><textarea cols="50" class="actual-worklog-title" placeholder="Title" ></textarea></td>
-//         </tr>
-//         <tr>
-//         <td colspan="4"><textarea cols="100" rows="10" class="actual-worklog-text" placeholder="Worklog Text" ></textarea></td>
-//         </tr>
-//         </div>
 
     [renderWorklogs](worklog) {
 
@@ -324,6 +303,19 @@ export default class {
                 </div>`;
 
     }
+
+    rendernewWorklog () {
+        return `<div class="form-group" style="display: none;">
+                        <label for="title">Titel:</label>
+                        <input type="text" class="form-control" id="title">
+                    <br>
+                        <label for="description">Beschreibung:</label>
+                        <textarea class="form-control" id="description">
+                        </textarea>
+                    <br>
+                    <span class="pull-right"><button type="button" id="save-worklog" class="btn btn-primary btn-lg">Save</button></span>
+                    </div>`;
+}
 
     // todo: show wl detail
     showWorklogDetail(worklog) {

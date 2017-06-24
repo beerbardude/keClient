@@ -68228,6 +68228,7 @@ var _class = function () {
         key: "onShowDetailError",
         value: function onShowDetailError(knownErrorId) {
             var view = this.view;
+            this.view.changeAddButtonText();
             var stats = this.store.getStats();
             this.store.getKnownErrorById(knownErrorId).then(function (worklog) {
                 console.log("worklog", worklog);
@@ -68545,6 +68546,7 @@ var onAddErrorClick = Symbol();
 var onShowDetailClick = Symbol();
 var onShowWorklogDetailClick = Symbol();
 var onAddWorklogClick = Symbol();
+var onsaveWorklogClick = Symbol();
 
 var _class = function () {
     function _class($doc) {
@@ -68572,11 +68574,6 @@ var _class = function () {
         key: "registerShowDetailErrorHandler",
         value: function registerShowDetailErrorHandler(handler) {
             this.onShowDetailErrorHandler = handler;
-        }
-    }, {
-        key: "registerShowWorklogDetailHandler",
-        value: function registerShowWorklogDetailHandler(handler) {
-            this.onShowWorklogDetailClick = handler;
         }
     }, {
         key: "registerAddWorklogClick",
@@ -68622,14 +68619,6 @@ var _class = function () {
                 catText: catText
             };
             this.onShowDetailErrorHandler(knownError);
-        }
-    }, {
-        key: onShowWorklogDetailClick,
-        value: function value(event) {
-            var worklog = {
-                id: event.id
-            };
-            this.onShowWorklogDetailClick(worklog);
         }
     }, {
         key: onAddWorklogClick,
@@ -68678,7 +68667,9 @@ var _class = function () {
             var _this = this;
 
             var $table = this.$doc.querySelector("table");
-            $table.innerHTML = knownErrors.map(this[renderKnownError]).join('');
+
+            var renderedErrors = knownErrors.map(this[renderKnownError]).join('');
+            $table.innerHTML = $table.innerHTML.concat(renderedErrors);
 
             var $tr = $table.querySelectorAll(".known-error");
             $tr.forEach(function (tr) {
@@ -68779,6 +68770,11 @@ var _class = function () {
         value: function value(name) {
             return "<option value=\"" + name.id + "\">" + name.name + "</option>";
         }
+    }, {
+        key: "changeAddButtonText",
+        value: function changeAddButtonText() {
+            this.$doc.querySelector(".add-button").style.display = "none";
+        }
 
         // todo : get worklogs list
 
@@ -68802,42 +68798,37 @@ var _class = function () {
                 }
             });
 
-            var worklogList = this.$main.querySelector('.worklog-list');
+            var $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog");
+            $hiddenWorklogDiv.innerHTML = this.rendernewWorklog();
+
+            var $saveButton = $hiddenWorklogDiv.querySelector(".save-worklog");
+            var $actualWorklogTitle = this.$main.querySelector("#title");
+            var $actualWorklogText = this.$main.querySelector("#desciption"
+
+            //        $saveButton.addEventListener('click', this[onsaveWorklogClick].bind(this, $actualWorklogTitle, $actualWorklogText))
+
+
+            );var worklogList = this.$main.querySelector('.worklog-list');
             worklogList.innerHTML = worklogs.map(this[renderWorklogs]).join('');
 
-            var $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog");
-            var $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title");
-            var $actualWorklogText = this.$main.querySelector(".actual-worklog-text");
-
-            var $addWorkLogButton = this.$main.querySelector(".add-worklog");
-            $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError) //, $actualWorklogTitle, $actualWorklogText))
-            );
+            var $addWorkLogButton = this.$main.querySelector("#add-worklog");
+            $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError));
         }
     }, {
         key: renderDetailError,
         value: function value(dError) {
-            return "<table class=\"table\">\n                    <thead>\n                        <tr>\n                            <th>" + dError.id + "</th>\n                            <th>" + dError.title + "</th>\n                            <th><select class=\"new-error-status\">\n                            </select></th>\n                            <th>" + dError.nameText + "</th>\n                            <th>" + dError.catText + "</th>\n                        </tr>\n                    </thead>\n                    <tr>\n                        <td colspan=\"5\"><input class=\"add-worklog\" type=\"submit\" value=\"Add Worklog\"/></td>\n                    </tr>\n                </table><div class=\"worklog-list\"></div>";
+            return "<table class=\"table\">\n                    <thead>\n                        <tr>\n                            <th><h4>" + dError.id + "</h4></th>\n                            <th><h4><b>" + dError.title + "</b></h4></th>\n                            <th><h4><select class=\"new-error-status\">\n                            </select></h4></th>\n                            <th><h4>" + dError.nameText + "</h4></th>\n                            <th><h4>" + dError.catText + "</h4></th>\n                        </tr>\n                    </thead>                   \n                </table>\n                <div class=\"text-center\"><button type=\"button\" id=\"add-worklog\" class=\"btn btn-primary btn-lg\">Add Worklog</button></div>\n                <br>\n                <div class=\"hidden-worklog\"></div>\n                <br>\n                <br>\n                <div class=\"worklog-list\"></div>";
         }
-    }, {
-        key: renderDetailWorklog,
-        value: function value(worklog) {
-            return "<div class=\"known-error-detail\">\n                    <table class=\"table\">\n                    <thead>\n                        <tr>\n                            <th>" + worklog.title + "</th>\n                            <th><select class=\"new-error-status\">\n                                \n                                </select></th>\n                            <th>" + worklog.id + "</th>\n                            <th>" + worklog.id_category + "</th>\n                        </tr>\n                    </thead>\n               </table>\n               <div style=\"width: 80%; margin-left:auto; margin-right: auto;\" class=\"worklog-list-div\"><table class=\"table table-hover\"></table></div>";
-        }
-        //
-        // <div class="hidden-worklog" style="display: none;">
-        //         <tr>
-        //         <td colspan="4"><textarea cols="50" class="actual-worklog-title" placeholder="Title" ></textarea></td>
-        //         </tr>
-        //         <tr>
-        //         <td colspan="4"><textarea cols="100" rows="10" class="actual-worklog-text" placeholder="Worklog Text" ></textarea></td>
-        //         </tr>
-        //         </div>
-
     }, {
         key: renderWorklogs,
         value: function value(worklog) {
 
             return "<div class=\"panel-group\" id=\"accordion\">\n                    <div class=\"panel panel-default\">\n                        <div class=\"panel-heading\">\n                            <h3 class=\"panel-title\">\n                            <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#" + worklog.id + "\">\n                            " + worklog.title + "\n                            </a>\n                            <span class=\"pull-right\">" + worklog.name + "</span>\n                            </h3>\n                        </div>\n                        <div id=\"" + worklog.id + "\" class=\"panel-collapse collapse\">\n                            <div class=\"panel-body\">\n                            " + worklog.description + "\n                            </div>\n                        </div>\n                    </div>\n                </div>";
+        }
+    }, {
+        key: "rendernewWorklog",
+        value: function rendernewWorklog() {
+            return "<div class=\"form-group\" style=\"display: none;\">\n                        <label for=\"title\">Titel:</label>\n                        <input type=\"text\" class=\"form-control\" id=\"title\">\n                    <br>\n                        <label for=\"description\">Beschreibung:</label>\n                        <textarea class=\"form-control\" id=\"description\">\n                        </textarea>\n                    <br>\n                    <span class=\"pull-right\"><button type=\"button\" id=\"save-worklog\" class=\"btn btn-primary btn-lg\">Save</button></span>\n                    </div>";
         }
 
         // todo: show wl detail

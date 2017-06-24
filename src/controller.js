@@ -42,6 +42,7 @@ export default class {
      */
     onShowDetailError(knownErrorId){
         let view = this.view
+        this.view.changeAddButtonText()
         let stats = this.store.getStats()
         this.store.getKnownErrorById(knownErrorId)
         .then((worklog) => {
