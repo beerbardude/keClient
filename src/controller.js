@@ -49,8 +49,6 @@ export default class {
             view.renderDetailErrors(worklog, knownErrorId, stats)
         }).catch(view.renderError.bind(view))
 
-        //this.view.renderDetailErrors(detError, stats)
-        //this.view.showWorklogs(worklogs)
     }
 
 

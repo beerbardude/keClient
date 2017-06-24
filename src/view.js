@@ -304,43 +304,26 @@ export default class {
 //         </div>
 
     [renderWorklogs](worklog) {
-        return `<table>
-                    <tr><th>${worklog.title}</th><th>${worklog.name}</th></tr>
-                    <tr><td>${worklog.description}<td></tr>
-                    <tr><td></td></tr>
-                </table>`;
-        //<button class="showWorklog" type="submit">+</button>
+
+        return `<div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#${worklog.id}">
+                            ${worklog.title}
+                            </a>
+                            <span class="pull-right">${worklog.name}</span>
+                            </h3>
+                        </div>
+                        <div id="${worklog.id}" class="panel-collapse collapse">
+                            <div class="panel-body">
+                            ${worklog.description}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
     }
-
-    //todo: append worklogs
-    showWorklogs(worklogs) {
-        let worklogsDummy = [
-            {
-                "id": 1,
-                "name" : "Alexander",
-                "title": "Eintrag verschwindet",
-                "description": "Wenn ein eintrag gemacht wird...dsfsfjoewfjpwefjpswff"
-            },
-            {
-                "id": 2,
-                "name" : "Armin",
-                "title": "SDFew fwef",
-                "description": "dsfsdgfs cfsdf ewtf wefsgvadfg qagra sdfgb sgsg werg wgb wtghewr gbwtb wtg dsbwr gh"
-            },
-            {
-                "id": 3,
-                "name" : "Egon",
-                "title": "DFjokldfE Fedf",
-                "description": "EWft treffi WEfgjyRÖGjka#4ptfoik areg" +
-                "qi rdsfsdgfs cfsdf ewtf wefsgvadfg qagra sdfgb sgsg werg wgb wtghewr gbwtb wtg dsbwr gh"
-            }
-        ]
-
-        let workloglist = this.$main.querySelector(".worklog-list-div")
-        let table = workloglist.querySelector("table")
-        table.innerHTML = worklogsDummy.map(this[renderWorklogs])
-    }
-
 
     // todo: show wl detail
     showWorklogDetail(worklog) {
