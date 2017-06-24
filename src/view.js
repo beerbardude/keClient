@@ -233,6 +233,8 @@ export default class {
 
     // todo : get worklogs list
     renderDetailErrors(worklogs, detailError, stats) {
+        this.$doc.querySelector('h1').innerHTML = 'Worklogs'
+
         this.$main.innerHTML = this[renderDetailError](detailError)
         let selection = this.$main.querySelector("select")
 
@@ -246,12 +248,12 @@ export default class {
             }
         })
 
-        // todo : worklogs rendering
-        //worklogs.map(this[renderDetailWorklog])
-        // let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
-        // $hiddenWorklogDiv.style.display = 'table'
-        // let $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title")
-        // let $actualWorklogText = this.$main.querySelector(".actual-worklog-text")
+        let worklogList = this.$main.querySelector('.worklog-list')
+        worklogList.innerHTML = worklogs.map(this[renderWorklogs]).join('')
+
+        let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
+        let $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title")
+        let $actualWorklogText = this.$main.querySelector(".actual-worklog-text")
 
         let $addWorkLogButton = this.$main.querySelector(".add-worklog")
         $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError)) //, $actualWorklogTitle, $actualWorklogText))
@@ -272,7 +274,7 @@ export default class {
                     <tr>
                         <td colspan="5"><input class="add-worklog" type="submit" value="Add Worklog"/></td>
                     </tr>
-                    </table>`;
+                </table><div class="worklog-list"></div>`;
     }
 
     [renderDetailWorklog](worklog) {
@@ -288,18 +290,27 @@ export default class {
                             <th>${worklog.id_category}</th>
                         </tr>
                     </thead>
-                    <div class="hidden-worklog" style="display: none;">
-                        <tr>
-                            <td colspan="4"><textarea cols="50" class="actual-worklog-title" placeholder="Title" ></textarea></td> 
-                        </tr>
-                        <tr>
-                            <td colspan="4"><textarea cols="100" rows="10" class="actual-worklog-text" placeholder="Worklog Text" ></textarea></td> 
-                        </tr>
-                    </div>
                </table>
                <div style="width: 80%; margin-left:auto; margin-right: auto;" class="worklog-list-div"><table class="table table-hover"></table></div>`;
     }
+//
+// <div class="hidden-worklog" style="display: none;">
+//         <tr>
+//         <td colspan="4"><textarea cols="50" class="actual-worklog-title" placeholder="Title" ></textarea></td>
+//         </tr>
+//         <tr>
+//         <td colspan="4"><textarea cols="100" rows="10" class="actual-worklog-text" placeholder="Worklog Text" ></textarea></td>
+//         </tr>
+//         </div>
 
+    [renderWorklogs](worklog) {
+        return `<table>
+                    <tr><th>${worklog.title}</th><th>${worklog.name}</th></tr>
+                    <tr><td>${worklog.description}<td></tr>
+                    <tr><td></td></tr>
+                </table>`;
+        //<button class="showWorklog" type="submit">+</button>
+    }
 
     //todo: append worklogs
     showWorklogs(worklogs) {
@@ -330,12 +341,6 @@ export default class {
         table.innerHTML = worklogsDummy.map(this[renderWorklogs])
     }
 
-    [renderWorklogs](worklog) {
-        return `<tr><th>${worklog.title}</th><th>${worklog.name}</th></tr>
-                <tr><td>${worklog.description}<td></tr>
-                <tr><td></td></tr>`;
-        //<button class="showWorklog" type="submit">+</button>
-    }
 
     // todo: show wl detail
     showWorklogDetail(worklog) {
