@@ -1,12 +1,16 @@
 'use strict'
 
 const renderKnownError = Symbol()
+
 const renderStat = Symbol()
+const renderStatSelected = Symbol()
 const renderName = Symbol()
 const renderCategory = Symbol()
+
 const renderDetailError = Symbol()
 const renderWorklogs = Symbol()
-const renderWorklog = Symbol()
+const renderDetailWorklog = Symbol()
+
 const onAddErrorClick = Symbol()
 const onShowDetailClick = Symbol()
 const onShowWorklogDetailClick = Symbol()
@@ -62,8 +66,25 @@ export default class {
 
 
     [onShowDetailClick](event) {
-        let knownError =  {
-            id: arguments[0]
+        console.log('event', arguments)
+        let id = arguments[0]
+        let title = arguments[1]
+        let name = arguments[2]
+        let nameText = arguments[3]
+        let stat = arguments[4]
+        let statText = arguments[5]
+        let cat = arguments[6]
+        let catText = arguments[7]
+
+        let knownError = {
+            id: id,
+            title: title,
+            name: name,
+            nameText: nameText,
+            stat: stat,
+            statText: statText,
+            cat : cat,
+            catText : catText
         }
         this.onShowDetailErrorHandler(knownError)
     }
@@ -77,17 +98,11 @@ export default class {
 
 
     [onAddWorklogClick](event) {
-        let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
-        $hiddenWorklogDiv.style.display = 'table'
-        let $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title")
-        let $actualWorklogText = this.$main.querySelector(".actual-worklog-text")
-
         let id = arguments[0]
         let name = arguments[0].name
         let category = arguments[0].category
         let title = arguments[1].value
         let description = arguments[2].value
-
         let worklogRecord =  {
             id_known_error : id,
             title : title,
@@ -111,11 +126,13 @@ export default class {
 
     /**
      * renders all known errors
-     * adds eventlistener to buttons
+     * makes a table of errors
+     * hidden inputs for the id values
+     * divs for text values
+     * adds eventlistener to buttons binds the hidden ids and div text values
      * @param {*a known error} knownErrors 
      */
     renderKnownErrors(knownErrors){
-        console.log(knownErrors)
         let $table = this.$doc.querySelector("table")
         $table.innerHTML = knownErrors.map(this[renderKnownError])
 
@@ -124,15 +141,21 @@ export default class {
             let knownErrorId = tr.querySelector(".known-error-id")
             let knownErrorTitle = tr.querySelector(".known-error-title")
             let knownErrorName = tr.querySelector(".known-error-name")
+            let knownErrorNameText = tr.querySelector(".known-error-name-text")
             let knownErrorStatus = tr.querySelector(".known-error-status")
+            let knownErrorStatusText = tr.querySelector(".known-error-status-text")
             let knownErrorCategory = tr.querySelector(".known-error-category")
+            let knownErrorCategoryText = tr.querySelector(".known-error-category-text")
             let detailButton = tr.querySelector("a")
-            detailButton.addEventListener('click', this[onShowDetailClick].bind(this,
-                knownErrorId.innerHTML,
-            knownErrorTitle.innerHTML,
-            knownErrorName.innerHTML,
-            knownErrorStatus.innerHTML,
-            knownErrorCategory.innerHTML))
+                detailButton.addEventListener('click', this[onShowDetailClick].bind(this,
+                knownErrorId.value,
+                knownErrorTitle.value,
+                knownErrorName.value,
+                knownErrorNameText.innerHTML,
+                knownErrorStatus.value,
+                knownErrorStatusText.innerHTML,
+                knownErrorCategory.value,
+                knownErrorCategoryText.innerHTML))
         })
     }
 
@@ -141,13 +164,15 @@ export default class {
     * @param {*a known error} knownError 
     */
     [renderKnownError](knownError){
-        console.log('knownE',knownError)
         return `<tr class="known-error">
-                    <td class="known-error-id">${knownError.id}</td>
-                    <td class="known-error-title"><a href="#">${knownError.title}</a></td>
-                    <td class="known-error-name">${knownError.name}</td>
-                    <td class="known-error-status">${knownError.status}</td>
-                    <td class="known-error-category">${knownError.category}</td>
+                    <td><input type="hidden" class="known-error-id" value="${knownError.keid}"/>${knownError.keid}</td>
+                    <td><input type="hidden" class="known-error-title" value="${knownError.title}"/><a href="#">${knownError.title}</a></td>
+                    <td><input type="hidden" class="known-error-name" value="${knownError.addbyid}"/>
+                        <div class="known-error-name-text">${knownError.name}</div></td>
+                    <td><input type="hidden" class="known-error-status" value="${knownError.statid}"/>
+                        <div class="known-error-status-text">${knownError.status}</div></td>
+                    <td><input type="hidden" class="known-error-category" value="${knownError.catid}"/>
+                        <div class="known-error-category-text">${knownError.category}</div></td>
                 </tr>`
     }
 
@@ -166,6 +191,10 @@ export default class {
      */
     [renderStat](stat){
         return `<option value="${stat.id}">${stat.status}</option>`;
+    }
+
+    [renderStatSelected](stat) {
+        return `<option selected value="${stat.id}">${stat.status}</option>`;
     }
 
     /**
@@ -202,38 +231,61 @@ export default class {
         return `<option value="${name.id}">${name.name}</option>`;
     }
 
-    // todo : get promise value working
-    renderDetailErrors(detailError) {
-        // detailError = {
-        //     "id" : 124,
-        //     "title": "Keine LTE Verbindung",
-        //     "name": "1",
-        //     "description" : "",
-        //     "category" : "Mobile ID",
-        //     "status" : "Pending"
-        // }
+    // todo : get worklogs list
+    renderDetailErrors(worklogs, detailError, stats) {
+        this.$main.innerHTML = this[renderDetailError](detailError)
+        let selection = this.$main.querySelector("select")
 
-        //let options = this[renderStat](stats)
-        //todo : status selection richtige option anzeigen
-        console.log('detailError',detailError)
-        this.$main.innerHTML = detailError.map(this[renderDetailError])
+        stats.then((stat) => {
+            selection.innerHTML = stat.map(this[renderStat]).join('')
+        }).then(() => {
+            for(let i = 0; i < selection.options.length; i++) {
+                if(selection.options[i].value === detailError.stat) {
+                    selection.options[i].selected = true
+                }
+            }
+        })
+
+        // todo : worklogs rendering
+        //worklogs.map(this[renderDetailWorklog])
+        // let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
+        // $hiddenWorklogDiv.style.display = 'table'
+        // let $actualWorklogTitle = this.$main.querySelector(".actual-worklog-title")
+        // let $actualWorklogText = this.$main.querySelector(".actual-worklog-text")
 
         let $addWorkLogButton = this.$main.querySelector(".add-worklog")
         $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError)) //, $actualWorklogTitle, $actualWorklogText))
     }
 
     [renderDetailError](dError) {
-        console.log('dError', dError)
+        return `<table class="table">
+                    <thead>
+                        <tr>
+                            <th>${dError.id}</th>
+                            <th>${dError.title}</th>
+                            <th><select class="new-error-status">
+                            </select></th>
+                            <th>${dError.nameText}</th>
+                            <th>${dError.catText}</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td colspan="5"><input class="add-worklog" type="submit" value="Add Worklog"/></td>
+                    </tr>
+                    </table>`;
+    }
+
+    [renderDetailWorklog](worklog) {
         return `<div class="known-error-detail">
                     <table class="table">
                     <thead>
                         <tr>
-                            <th>${dError.title}</th>
+                            <th>${worklog.title}</th>
                             <th><select class="new-error-status">
                                 
                                 </select></th>
-                            <th>${dError.id_added_by}</th>
-                            <th>${dError.id_category}</th>
+                            <th>${worklog.id}</th>
+                            <th>${worklog.id_category}</th>
                         </tr>
                     </thead>
                     <div class="hidden-worklog" style="display: none;">
@@ -244,12 +296,10 @@ export default class {
                             <td colspan="4"><textarea cols="100" rows="10" class="actual-worklog-text" placeholder="Worklog Text" ></textarea></td> 
                         </tr>
                     </div>
-                    <tr>
-                        <td colspan="4"><input class="add-worklog" type="submit" value="Add Worklog"/></td>
-                    </tr>
                </table>
                <div style="width: 80%; margin-left:auto; margin-right: auto;" class="worklog-list-div"><table class="table table-hover"></table></div>`;
     }
+
 
     //todo: append worklogs
     showWorklogs(worklogs) {
@@ -292,15 +342,6 @@ export default class {
         let worklogDetails = this[renderWorklog](worklog)
         this.$doc.innerHTML = worklogDetails
     }
-
-    // todo: render wl detail
-    [renderWorklog](worklog) {
-        // todo: render worklog detail
-        return `<li data-id="${worklog.id}">
-            <label>${worklog.title}</label>
-            ${worklog.text}</li>`;
-    }
-
 
 
     renderError(error) {

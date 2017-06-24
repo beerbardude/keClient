@@ -36,29 +36,21 @@ export default class {
     }
 
 
+    /**
+     * shows a known error with its worklogs
+     * @param knownErrorId
+     */
     onShowDetailError(knownErrorId){
-        //let detail = new Detail(this.view, this.store, knownErrorId)
-        // todo : resolve promise
         let view = this.view
-        // console.log(view)
+        let stats = this.store.getStats()
         this.store.getKnownErrorById(knownErrorId)
-        .then((kn) => {
-            //console.log("kn", kn)
-            view.renderDetailErrors(kn)
+        .then((worklog) => {
+            console.log("worklog", worklog)
+            view.renderDetailErrors(worklog, knownErrorId, stats)
         }).catch(view.renderError.bind(view))
 
-        // todo: OR get promise value
-        // let detError = this.store.getKnownErrorById(knownErrorId)
-        // let stats = this.store.getStats()
-        //                 .then(this.view.renderStats.bind(this.view))
-        //                 .catch(view.renderError.bind(view))
-
         //this.view.renderDetailErrors(detError, stats)
-
-        // todo : worklogs
-        let worklogs = 1
-            //this.store.getWorklogsFromKnownError(knownErrorId)
-        this.view.showWorklogs(worklogs)
+        //this.view.showWorklogs(worklogs)
     }
 
 
