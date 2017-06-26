@@ -73,13 +73,10 @@ export default class Store {
         request.post(
             server + 'add',
             {json:knownError},
-            function (error, response, body) {
+            function (error, response) {
                 if (!error && response.statusCode == 200) {
                     window.alert("Added Error")
                     window.location.replace(localIndex)
-                }
-                else {
-                    console.log("error", knownError)
                 }
             }
         );

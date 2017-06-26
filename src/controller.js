@@ -25,7 +25,6 @@ export default class {
 
         view.registerAddKnownErrorHandler(this.onAddKnownError.bind(this))
         view.registerShowDetailErrorHandler(this.onShowDetailError.bind(this))
-        view.registerShowWorklogDetailHandler(this.onShowWorklogDetail.bind(this))
         view.registerAddWorklogClick(this.onAddWorklog.bind(this))
 
     }

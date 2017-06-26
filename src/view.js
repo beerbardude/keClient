@@ -52,13 +52,20 @@ export default class {
         let stat = arguments[1]
         let name = arguments[2]
         let cat = arguments[3]
-        let knownError =  {
-            title: title.value,
-            status: stat.options[stat.selectedIndex].value,
-            name: name.options[name.selectedIndex].value,
-            category: cat.options[cat.selectedIndex].value
+        if (this.checkUniqueTitle(title) && title.value !== '') {
+            this.changeBorderColor('.new-error-title', '#000')
+            let knownError = {
+                title: title.value,
+                status: stat.options[stat.selectedIndex].value,
+                name: name.options[name.selectedIndex].value,
+                category: cat.options[cat.selectedIndex].value
+            }
+            this.onAddKnownErrorHandler(knownError)
         }
-        this.onAddKnownErrorHandler(knownError)
+        else {
+            this.changeBorderColor('.new-error-title', '#f00')
+            window.alert('Titel muss eindeutig sein und einen Wert haben')
+        }
     }
 
 
@@ -327,6 +334,26 @@ export default class {
     renderError(error) {
         let errorDiv = this.$doc.querySelector(".errorDiv")
         errorDiv.innerHTML = "Error " + error
+    }
+
+    /**
+     * checks if the new title exists within the known error titles
+     * @param title
+     * @returns {boolean}
+     */
+    checkUniqueTitle(title) {
+        let titles = this.$main.querySelectorAll('.known-error-title')
+        for (let i = 0; i < titles.length; i++) {
+            if (titles[i].value === title.value) {
+                return false
+            }
+        }
+        return true
+    }
+
+    changeBorderColor(elementClass, color) {
+        let newErrorInput = this.$main.querySelector(elementClass)
+        newErrorInput.style.borderColor = color
     }
 }
 
