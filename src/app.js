@@ -8,6 +8,3 @@ const view = new View(window.document)
 const store = new Store
 const ctrl = new Controller(view, store)
 
-// window.addEventListener('load', () => {
-//     //view.render()
-// })

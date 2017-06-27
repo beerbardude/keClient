@@ -17,6 +17,8 @@ const onShowWorklogDetailClick = Symbol()
 const onAddWorklogClick = Symbol()
 const onsaveWorklogClick = Symbol()
 
+const onHomeButtonClick = Symbol()
+
 export default class {
     constructor($doc){
         this.$doc = $doc
@@ -27,6 +29,9 @@ export default class {
         let $inputStatus = $doc.querySelector(".new-error-status")
         let $inputName = $doc.querySelector(".new-error-name")
         let $inputCategory = $doc.querySelector(".new-error-category")
+
+        let $homeButton = $doc.querySelector("#home-button")
+        $homeButton.addEventListener('click', this[onHomeButtonClick].bind(this))
 
         let $addButton = $doc.querySelector(".add-button")
         $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory))
@@ -44,6 +49,10 @@ export default class {
 
     registerAddWorklogClick(handler) {
         this.onAddWorklogClick = handler
+    }
+
+    registerOnHomeButtonClick(handler) {
+        this.onHomeButtonClick = handler
     }
 
 
@@ -110,6 +119,10 @@ export default class {
         this.onAddWorklogClick(worklogRecord)
     }
 
+    [onHomeButtonClick](event) {
+        this.onHomeButtonClick(event)
+    }
+
     /**
      * adds a known error to the error-list
      * @param {*a known error} knownError
@@ -127,7 +140,7 @@ export default class {
      * hidden inputs for the id values
      * divs for text values
      * adds eventlistener to buttons binds the hidden ids and div text values
-     * @param {*a known error} knownErrors 
+     * @param {*a known error} knownErrors
      */
     renderKnownErrors(knownErrors){
         let $table = this.$doc.querySelector("table")
@@ -160,7 +173,7 @@ export default class {
 
     /**
     * renders a known error
-    * @param {*a known error} knownError 
+    * @param {*a known error} knownError
     */
     [renderKnownError](knownError){
         return `<tr class="known-error">

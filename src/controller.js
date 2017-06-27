@@ -1,6 +1,9 @@
 'use strict'
 
+const localIndex = "http://localhost:8008/src/index.html"
+
 const getKnownErrorOfAllErrors = Symbol()
+
 
 export default class {
     constructor(view, store){
@@ -27,6 +30,7 @@ export default class {
         view.registerShowDetailErrorHandler(this.onShowDetailError.bind(this))
         view.registerAddWorklogClick(this.onAddWorklog.bind(this))
 
+        view.registerOnHomeButtonClick(this.onHomeButtonClick.bind(this))
     }
 
 
@@ -70,5 +74,9 @@ export default class {
 
     onAddWorklog(worklog) {
         this.store.addWorklog(worklog)
+    }
+
+    onHomeButtonClick() {
+        window.location.replace(localIndex)
     }
 }
