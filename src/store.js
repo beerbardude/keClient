@@ -210,5 +210,31 @@ export default class Store {
         })
     }
 
+    /**
+     * gets the search results
+     * ke id
+     * ke name
+     * wl name
+     * wl description
+     * returns all when search string is empty
+     * @param searchString
+     */
+    getSearchResults(searchString) {
+        console.log('store search', searchString)
+        let headers = new Headers({
+            'Accept': 'application/json'
+        })
+        return fetch(server + `search/${(searchString)}`, {
+            method: 'GET',
+            headers: headers,
+        }).then((resp)=>{
+            if(resp.ok){
+                return resp.json()
+            }else{
+                return Promise.reject(resp)
+            }
+        })
+    }
+
 
 }

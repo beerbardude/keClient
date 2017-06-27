@@ -18,6 +18,7 @@ const onAddWorklogClick = Symbol()
 const onsaveWorklogClick = Symbol()
 
 const onHomeButtonClick = Symbol()
+const onSearchFieldClick = Symbol()
 
 export default class {
     constructor($doc){
@@ -36,6 +37,8 @@ export default class {
         let $addButton = $doc.querySelector(".add-button")
         $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory))
 
+        let $searchField = $doc.querySelector("#search-field")
+        $searchField.addEventListener('input', this[onSearchFieldClick].bind(this))
     }
 
 
@@ -55,6 +58,9 @@ export default class {
         this.onHomeButtonClick = handler
     }
 
+    registerSearchFieldClick(handler) {
+        this.onSearchFieldClick = handler
+    }
 
     [onAddErrorClick](event) {
         let title = arguments[0]
@@ -77,9 +83,19 @@ export default class {
         }
     }
 
+    renderTableHead() {
+        return `<thead>
+                <tr>
+                    <th data-field="id">ID</th>
+                    <th data-field="title">Title</th>
+                    <th data-field="status">Status</th>
+                    <th data-field="name">Name</th>
+                    <th data-field="category">Kategorie</th>
+                </tr>
+                </thead>`
+    }
 
     [onShowDetailClick](event) {
-        console.log('event', arguments)
         let id = arguments[0]
         let title = arguments[1]
         let name = arguments[2]
@@ -123,6 +139,13 @@ export default class {
         this.onHomeButtonClick(event)
     }
 
+    [onSearchFieldClick](event) {
+        let text = event.target.value
+        if(text !== undefined && text !== '') {
+            this.onSearchFieldClick(text)
+        }
+    }
+
     /**
      * adds a known error to the error-list
      * @param {*a known error} knownError
@@ -145,10 +168,15 @@ export default class {
     renderKnownErrors(knownErrors){
         let $table = this.$doc.querySelector("table")
 
+        /** refreshing table */
+        $table.innerHTML = '';
+        /** add table head */
+        $table.innerHTML = this.renderTableHead()
+
         let renderedErrors = knownErrors.map(this[renderKnownError]).join('')
         $table.innerHTML = $table.innerHTML.concat(renderedErrors)
 
-            let $tr = $table.querySelectorAll(".known-error")
+        let $tr = $table.querySelectorAll(".known-error")
         $tr.forEach(tr => {
             let knownErrorId = tr.querySelector(".known-error-id")
             let knownErrorTitle = tr.querySelector(".known-error-title")
@@ -303,7 +331,6 @@ export default class {
     }
 
     [renderWorklogs](worklog) {
-
         return `<div class="panel-group" id="accordion">
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -324,6 +351,7 @@ export default class {
 
     }
 
+
     rendernewWorklog () {
         return `<div class="form-group" style="display: none;">
                         <label for="title">Titel:</label>
@@ -335,7 +363,7 @@ export default class {
                     <br>
                     <span class="pull-right"><button type="button" id="save-worklog" class="btn btn-primary btn-lg">Save</button></span>
                     </div>`;
-}
+    }
 
     // todo: show wl detail
     showWorklogDetail(worklog) {
@@ -364,6 +392,11 @@ export default class {
         return true
     }
 
+    /**
+     * change border color of html element
+     * @param elementClass
+     * @param color
+     */
     changeBorderColor(elementClass, color) {
         let newErrorInput = this.$main.querySelector(elementClass)
         newErrorInput.style.borderColor = color

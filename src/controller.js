@@ -31,6 +31,7 @@ export default class {
         view.registerAddWorklogClick(this.onAddWorklog.bind(this))
 
         view.registerOnHomeButtonClick(this.onHomeButtonClick.bind(this))
+        view.registerSearchFieldClick(this.onSearchFieldClick.bind(this))
     }
 
 
@@ -79,4 +80,11 @@ export default class {
     onHomeButtonClick() {
         window.location.replace(localIndex)
     }
+
+    onSearchFieldClick(searchString) {
+        this.store.getSearchResults(searchString)
+            .then(this.view.renderKnownErrors.bind(this.view))
+            .catch(this.view.renderError.bind(this.view))
+    }
+
 }
