@@ -68175,10 +68175,6 @@ var view = new _view2.default(window.document);
 var store = new _store2.default();
 var ctrl = new _controller2.default(view, store);
 
-// window.addEventListener('load', () => {
-//     //view.render()
-// })
-
 },{"./controller":342,"./store":343,"./view":344}],342:[function(require,module,exports){
 'use strict';
 
@@ -68189,6 +68185,8 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var localIndex = "http://localhost:8008/src/index.html";
 
 var getKnownErrorOfAllErrors = Symbol();
 
@@ -68209,8 +68207,10 @@ var _class = function () {
 
         view.registerAddKnownErrorHandler(this.onAddKnownError.bind(this));
         view.registerShowDetailErrorHandler(this.onShowDetailError.bind(this));
-        view.registerShowWorklogDetailHandler(this.onShowWorklogDetail.bind(this));
         view.registerAddWorklogClick(this.onAddWorklog.bind(this));
+
+        view.registerOnHomeButtonClick(this.onHomeButtonClick.bind(this));
+        view.registerSearchFieldClick(this.onSearchFieldClick.bind(this));
     }
 
     _createClass(_class, [{
@@ -68261,6 +68261,16 @@ var _class = function () {
         key: "onAddWorklog",
         value: function onAddWorklog(worklog) {
             this.store.addWorklog(worklog);
+        }
+    }, {
+        key: "onHomeButtonClick",
+        value: function onHomeButtonClick() {
+            window.location.replace(localIndex);
+        }
+    }, {
+        key: "onSearchFieldClick",
+        value: function onSearchFieldClick(searchString) {
+            this.store.getSearchResults(searchString).then(this.view.renderKnownErrors.bind(this.view)).catch(this.view.renderError.bind(this.view));
         }
     }]);
 
@@ -68363,12 +68373,10 @@ var Store = function () {
     }, {
         key: 'addKnownError',
         value: function addKnownError(knownError) {
-            request.post(server + 'add', { json: knownError }, function (error, response, body) {
+            request.post(server + 'add', { json: knownError }, function (error, response) {
                 if (!error && response.statusCode == 200) {
                     window.alert("Added Error");
                     window.location.replace(localIndex);
-                } else {
-                    console.log("error", knownError);
                 }
             });
         }
@@ -68513,6 +68521,35 @@ var Store = function () {
                 }
             });
         }
+
+        /**
+         * gets the search results
+         * ke id
+         * ke name
+         * wl name
+         * wl description
+         * returns all when search string is empty
+         * @param searchString
+         */
+
+    }, {
+        key: 'getSearchResults',
+        value: function getSearchResults(searchString) {
+            console.log('store search', searchString);
+            var headers = new Headers({
+                'Accept': 'application/json'
+            });
+            return fetch(server + ('search/' + searchString), {
+                method: 'GET',
+                headers: headers
+            }).then(function (resp) {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    return Promise.reject(resp);
+                }
+            });
+        }
     }]);
 
     return Store;
@@ -68548,6 +68585,9 @@ var onShowWorklogDetailClick = Symbol();
 var onAddWorklogClick = Symbol();
 var onsaveWorklogClick = Symbol();
 
+var onHomeButtonClick = Symbol();
+var onSearchFieldClick = Symbol();
+
 var _class = function () {
     function _class($doc) {
         _classCallCheck(this, _class);
@@ -68561,8 +68601,14 @@ var _class = function () {
         var $inputName = $doc.querySelector(".new-error-name");
         var $inputCategory = $doc.querySelector(".new-error-category");
 
+        var $homeButton = $doc.querySelector("#home-button");
+        $homeButton.addEventListener('click', this[onHomeButtonClick].bind(this));
+
         var $addButton = $doc.querySelector(".add-button");
         $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory));
+
+        var $searchField = $doc.querySelector("#search-field");
+        $searchField.addEventListener('input', this[onSearchFieldClick].bind(this));
     }
 
     _createClass(_class, [{
@@ -68581,24 +68627,44 @@ var _class = function () {
             this.onAddWorklogClick = handler;
         }
     }, {
+        key: "registerOnHomeButtonClick",
+        value: function registerOnHomeButtonClick(handler) {
+            this.onHomeButtonClick = handler;
+        }
+    }, {
+        key: "registerSearchFieldClick",
+        value: function registerSearchFieldClick(handler) {
+            this.onSearchFieldClick = handler;
+        }
+    }, {
         key: onAddErrorClick,
         value: function value(event) {
             var title = arguments[0];
             var stat = arguments[1];
             var name = arguments[2];
             var cat = arguments[3];
-            var knownError = {
-                title: title.value,
-                status: stat.options[stat.selectedIndex].value,
-                name: name.options[name.selectedIndex].value,
-                category: cat.options[cat.selectedIndex].value
-            };
-            this.onAddKnownErrorHandler(knownError);
+            if (this.checkUniqueTitle(title) && title.value !== '') {
+                this.changeBorderColor('.new-error-title', '#000');
+                var knownError = {
+                    title: title.value,
+                    status: stat.options[stat.selectedIndex].value,
+                    name: name.options[name.selectedIndex].value,
+                    category: cat.options[cat.selectedIndex].value
+                };
+                this.onAddKnownErrorHandler(knownError);
+            } else {
+                this.changeBorderColor('.new-error-title', '#f00');
+                window.alert('Titel muss eindeutig sein und einen Wert haben');
+            }
+        }
+    }, {
+        key: "renderTableHead",
+        value: function renderTableHead() {
+            return "<thead>\n                <tr>\n                    <th data-field=\"id\">ID</th>\n                    <th data-field=\"title\">Title</th>\n                    <th data-field=\"status\">Status</th>\n                    <th data-field=\"name\">Name</th>\n                    <th data-field=\"category\">Kategorie</th>\n                </tr>\n                </thead>";
         }
     }, {
         key: onShowDetailClick,
         value: function value(event) {
-            console.log('event', arguments);
             var id = arguments[0];
             var title = arguments[1];
             var name = arguments[2];
@@ -68637,6 +68703,19 @@ var _class = function () {
             };
             this.onAddWorklogClick(worklogRecord);
         }
+    }, {
+        key: onHomeButtonClick,
+        value: function value(event) {
+            this.onHomeButtonClick(event);
+        }
+    }, {
+        key: onSearchFieldClick,
+        value: function value(event) {
+            var text = event.target.value;
+            if (text !== undefined && text !== '') {
+                this.onSearchFieldClick(text);
+            }
+        }
 
         /**
          * adds a known error to the error-list
@@ -68658,7 +68737,7 @@ var _class = function () {
          * hidden inputs for the id values
          * divs for text values
          * adds eventlistener to buttons binds the hidden ids and div text values
-         * @param {*a known error} knownErrors 
+         * @param {*a known error} knownErrors
          */
 
     }, {
@@ -68666,7 +68745,12 @@ var _class = function () {
         value: function renderKnownErrors(knownErrors) {
             var _this = this;
 
-            var $table = this.$doc.querySelector("table");
+            var $table = this.$doc.querySelector("table"
+
+            /** refreshing table */
+            );$table.innerHTML = '';
+            /** add table head */
+            $table.innerHTML = this.renderTableHead();
 
             var renderedErrors = knownErrors.map(this[renderKnownError]).join('');
             $table.innerHTML = $table.innerHTML.concat(renderedErrors);
@@ -68688,7 +68772,7 @@ var _class = function () {
 
         /**
         * renders a known error
-        * @param {*a known error} knownError 
+        * @param {*a known error} knownError
         */
 
     }, {
@@ -68799,36 +68883,48 @@ var _class = function () {
             });
 
             var $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog");
-            $hiddenWorklogDiv.innerHTML = this.rendernewWorklog();
+            $hiddenWorklogDiv.innerHTML = this.rendernewWorklog
 
-            var $saveButton = $hiddenWorklogDiv.querySelector(".save-worklog");
-            var $actualWorklogTitle = this.$main.querySelector("#title");
-            var $actualWorklogText = this.$main.querySelector("#desciption"
+            /* let $saveButton = $hiddenWorklogDiv.querySelector(".save-worklog")
+             let $actualWorklogTitle = this.$main.querySelector("#title")
+             let $actualWorklogText = this.$main.querySelector("#desciption")*/
 
             //        $saveButton.addEventListener('click', this[onsaveWorklogClick].bind(this, $actualWorklogTitle, $actualWorklogText))
 
 
-            );var worklogList = this.$main.querySelector('.worklog-list');
-            worklogList.innerHTML = worklogs.map(this[renderWorklogs]).join('');
+            ();var worklogList = this.$main.querySelector('.worklog-list');
+            worklogList.innerHTML = worklogs.map(this[renderWorklogs]).join(''
 
-            var $addWorkLogButton = this.$main.querySelector("#add-worklog");
-            $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError));
+            /*        let $addWorkLogButton = this.$main.querySelector("#add-worklog")
+                    $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError))*/
+            );
         }
     }, {
         key: renderDetailError,
         value: function value(dError) {
-            return "<table class=\"table\">\n                    <thead>\n                        <tr>\n                            <th><h4>" + dError.id + "</h4></th>\n                            <th><h4><b>" + dError.title + "</b></h4></th>\n                            <th><h4><select class=\"new-error-status\">\n                            </select></h4></th>\n                            <th><h4>" + dError.nameText + "</h4></th>\n                            <th><h4>" + dError.catText + "</h4></th>\n                        </tr>\n                    </thead>                   \n                </table>\n                <div class=\"text-center\"><button type=\"button\" id=\"add-worklog\" class=\"btn btn-primary btn-lg\">Add Worklog</button></div>\n                <br>\n                <div class=\"hidden-worklog\"></div>\n                <br>\n                <br>\n                <div class=\"worklog-list\"></div>";
+            return "<table class=\"table\">\n                    <thead>\n                        <tr>\n                            <th><h4>" + dError.id + "</h4></th>\n                            <th><h4><b>" + dError.title + "</b></h4></th>\n                            <th><h4><select class=\"new-error-status\">\n                            </select></h4></th>\n                            <th><h4>" + dError.nameText + "</h4></th>\n                            <th><h4>" + dError.catText + "</h4></th>\n                        </tr>\n                    </thead>                   \n                </table>\n                <!--<div class=\"text-center\"><button type=\"button\" id=\"add-worklog\" class=\"btn btn-primary btn-lg\">Add Worklog</button></div>-->\n                <div class=\"hidden-worklog\"></div>\n                <div class=\"worklog-list\"></div>";
         }
     }, {
         key: renderWorklogs,
         value: function value(worklog) {
-
             return "<div class=\"panel-group\" id=\"accordion\">\n                    <div class=\"panel panel-default\">\n                        <div class=\"panel-heading\">\n                            <h3 class=\"panel-title\">\n                            <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#" + worklog.id + "\">\n                            " + worklog.title + "\n                            </a>\n                            <span class=\"pull-right\">" + worklog.name + "</span>\n                            </h3>\n                        </div>\n                        <div id=\"" + worklog.id + "\" class=\"panel-collapse collapse\">\n                            <div class=\"panel-body\">\n                            " + worklog.description + "\n                            </div>\n                        </div>\n                    </div>\n                </div>";
         }
     }, {
         key: "rendernewWorklog",
         value: function rendernewWorklog() {
-            return "<div class=\"form-group\" style=\"display: none;\">\n                        <label for=\"title\">Titel:</label>\n                        <input type=\"text\" class=\"form-control\" id=\"title\">\n                    <br>\n                        <label for=\"description\">Beschreibung:</label>\n                        <textarea class=\"form-control\" id=\"description\">\n                        </textarea>\n                    <br>\n                    <span class=\"pull-right\"><button type=\"button\" id=\"save-worklog\" class=\"btn btn-primary btn-lg\">Save</button></span>\n                    </div>";
+
+            return "<div class='panel-group' id=\"accordion\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"display-4\">\n                        <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#new-worklog\">\n                        <div class=\"text-center\">Add Worklog</div>\n                        </a>\n                        </h3>\n                    </div>\n                    <div id=\"new-worklog\" class=\"panel-collapse collapse\">\n                        <div class=\"panel-body\">\n                        <label for=\"title\">Titel:</label>\n                            <input type=\"text\" class=\"form-control\" id=\"title\">\n                    <br>\n                        <label for=\"description\">Beschreibung:</label>\n                            <textarea class=\"form-control\" id=\"description\">\n                            </textarea>\n                    <br>\n                        <span class=\"pull-right\"><button type=\"button\" id=\"save-worklog\" class=\"btn btn-primary btn-lg\">Save</button></span>\n                        </div>\n                    </div>";
+
+            /*        return `<div class="form-group" style="display: none;">
+                                    <label for="title">Titel:</label>
+                                    <input type="text" class="form-control" id="title">
+                                <br>
+                                    <label for="description">Beschreibung:</label>
+                                    <textarea class="form-control" id="description">
+                                    </textarea>
+                                <br>
+                                <span class="pull-right"><button type="button" id="save-worklog" class="btn btn-primary btn-lg">Save</button></span>
+                                </div>`;*/
         }
 
         // todo: show wl detail
@@ -68844,6 +68940,37 @@ var _class = function () {
         value: function renderError(error) {
             var errorDiv = this.$doc.querySelector(".errorDiv");
             errorDiv.innerHTML = "Error " + error;
+        }
+
+        /**
+         * checks if the new title exists within the known error titles
+         * @param title
+         * @returns {boolean}
+         */
+
+    }, {
+        key: "checkUniqueTitle",
+        value: function checkUniqueTitle(title) {
+            var titles = this.$main.querySelectorAll('.known-error-title');
+            for (var i = 0; i < titles.length; i++) {
+                if (titles[i].value === title.value) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /**
+         * change border color of html element
+         * @param elementClass
+         * @param color
+         */
+
+    }, {
+        key: "changeBorderColor",
+        value: function changeBorderColor(elementClass, color) {
+            var newErrorInput = this.$main.querySelector(elementClass);
+            newErrorInput.style.borderColor = color;
         }
     }]);
 

@@ -295,9 +295,9 @@ export default class {
         let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
         $hiddenWorklogDiv.innerHTML = this.rendernewWorklog()
 
-        let $saveButton = $hiddenWorklogDiv.querySelector(".save-worklog")
+       /* let $saveButton = $hiddenWorklogDiv.querySelector(".save-worklog")
         let $actualWorklogTitle = this.$main.querySelector("#title")
-        let $actualWorklogText = this.$main.querySelector("#desciption")
+        let $actualWorklogText = this.$main.querySelector("#desciption")*/
 
 //        $saveButton.addEventListener('click', this[onsaveWorklogClick].bind(this, $actualWorklogTitle, $actualWorklogText))
 
@@ -305,8 +305,8 @@ export default class {
         let worklogList = this.$main.querySelector('.worklog-list')
         worklogList.innerHTML = worklogs.map(this[renderWorklogs]).join('')
 
-        let $addWorkLogButton = this.$main.querySelector("#add-worklog")
-        $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError))
+/*        let $addWorkLogButton = this.$main.querySelector("#add-worklog")
+        $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError))*/
     }
 
     [renderDetailError](dError) {
@@ -322,11 +322,8 @@ export default class {
                         </tr>
                     </thead>                   
                 </table>
-                <div class="text-center"><button type="button" id="add-worklog" class="btn btn-primary btn-lg">Add Worklog</button></div>
-                <br>
+                <!--<div class="text-center"><button type="button" id="add-worklog" class="btn btn-primary btn-lg">Add Worklog</button></div>-->
                 <div class="hidden-worklog"></div>
-                <br>
-                <br>
                 <div class="worklog-list"></div>`;
     }
 
@@ -353,7 +350,29 @@ export default class {
 
 
     rendernewWorklog () {
-        return `<div class="form-group" style="display: none;">
+
+        return `<div class='panel-group' id="accordion">
+                    <div class="panel-heading">
+                        <h3 class="display-4">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#new-worklog">
+                        <div class="text-center">Add Worklog</div>
+                        </a>
+                        </h3>
+                    </div>
+                    <div id="new-worklog" class="panel-collapse collapse">
+                        <div class="panel-body">
+                        <label for="title">Titel:</label>
+                            <input type="text" class="form-control" id="title">
+                    <br>
+                        <label for="description">Beschreibung:</label>
+                            <textarea class="form-control" id="description">
+                            </textarea>
+                    <br>
+                        <span class="pull-right"><button type="button" id="save-worklog" class="btn btn-primary btn-lg">Save</button></span>
+                        </div>
+                    </div>`
+
+/*        return `<div class="form-group" style="display: none;">
                         <label for="title">Titel:</label>
                         <input type="text" class="form-control" id="title">
                     <br>
@@ -362,7 +381,7 @@ export default class {
                         </textarea>
                     <br>
                     <span class="pull-right"><button type="button" id="save-worklog" class="btn btn-primary btn-lg">Save</button></span>
-                    </div>`;
+                    </div>`;*/
     }
 
     // todo: show wl detail
