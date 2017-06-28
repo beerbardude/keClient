@@ -28,7 +28,7 @@ export default class {
 
         view.registerAddKnownErrorHandler(this.onAddKnownError.bind(this))
         view.registerShowDetailErrorHandler(this.onShowDetailError.bind(this))
-        view.registerAddWorklogClick(this.onAddWorklog.bind(this))
+        view.registersaveWorklogClick(this.onAddWorklog.bind(this))
 
         view.registerOnHomeButtonClick(this.onHomeButtonClick.bind(this))
         view.registerSearchFieldClick(this.onSearchFieldClick.bind(this))

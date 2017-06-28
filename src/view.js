@@ -14,7 +14,6 @@ const renderDetailWorklog = Symbol()
 const onAddErrorClick = Symbol()
 const onShowDetailClick = Symbol()
 const onShowWorklogDetailClick = Symbol()
-const onAddWorklogClick = Symbol()
 const onsaveWorklogClick = Symbol()
 
 const onHomeButtonClick = Symbol()
@@ -37,6 +36,8 @@ export default class {
         let $addButton = $doc.querySelector(".add-button")
         $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory))
 
+        //$saveWorkLogButton.addEventListener('click', this[onsaveWorklogClick].bind(this, ))
+
         let $searchField = $doc.querySelector("#search-field")
         $searchField.addEventListener('input', this[onSearchFieldClick].bind(this))
     }
@@ -50,8 +51,8 @@ export default class {
         this.onShowDetailErrorHandler = handler
     }
 
-    registerAddWorklogClick(handler) {
-        this.onAddWorklogClick = handler
+    registersaveWorklogClick(handler) {
+        this.onsaveWorklogClick = handler
     }
 
     registerOnHomeButtonClick(handler) {
@@ -119,7 +120,7 @@ export default class {
     }
 
 
-    [onAddWorklogClick](event) {
+    [onsaveWorklogClick](event) {
         let id = arguments[0]
         let name = arguments[0].name
         let category = arguments[0].category
@@ -132,7 +133,7 @@ export default class {
             name : name,
             category: category
         }
-        this.onAddWorklogClick(worklogRecord)
+        this.onsaveWorklogClick(worklogRecord)
     }
 
     [onHomeButtonClick](event) {
@@ -295,18 +296,34 @@ export default class {
         let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
         $hiddenWorklogDiv.innerHTML = this.rendernewWorklog()
 
-       /* let $saveButton = $hiddenWorklogDiv.querySelector(".save-worklog")
-        let $actualWorklogTitle = this.$main.querySelector("#title")
-        let $actualWorklogText = this.$main.querySelector("#desciption")*/
 
-//        $saveButton.addEventListener('click', this[onsaveWorklogClick].bind(this, $actualWorklogTitle, $actualWorklogText))
+
+        $('#new-worklog').on('shown.bs.collapse', function(){
+            console.log("Opened")
+        })
+
+/*/!*        test.armin.on('hidden.bs.collapse', function(){
+            console.log("closed")
+        })*!/
+        test_armin.on('shown.bs.collapse', function(e){
+            console.log("Opened" + e.currentTarget.id)
+        })
+
+        test_armin.hasClass('in')*/
+
+
+        let $saveWorkLogButton = $hiddenWorklogDiv.querySelector("#save-worklog")
+        let $actualWorklogTitle = this.$main.querySelector("#title")
+        let $actualWorklogText = this.$main.querySelector("#desciption")
+
+        $saveWorkLogButton.addEventListener('click', this[onsaveWorklogClick].bind(this, $actualWorklogTitle, $actualWorklogText))
 
 
         let worklogList = this.$main.querySelector('.worklog-list')
         worklogList.innerHTML = worklogs.map(this[renderWorklogs]).join('')
 
 /*        let $addWorkLogButton = this.$main.querySelector("#add-worklog")
-        $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError))*/
+        $addWorkLogButton.addEventListener('click', this[onsaveWorklogClick].bind(this, detailError))*/
     }
 
     [renderDetailError](dError) {
