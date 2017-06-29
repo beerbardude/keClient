@@ -177,6 +177,10 @@ export default class {
         let renderedErrors = knownErrors.map(this[renderKnownError]).join('')
         $table.innerHTML = $table.innerHTML.concat(renderedErrors)
 
+        $( document ).ready(function() {
+            $('#known-error-list').DataTable({bFilter: false, bInfo: false});
+        } );
+
         let $tr = $table.querySelectorAll(".known-error")
         $tr.forEach(tr => {
             let knownErrorId = tr.querySelector(".known-error-id")

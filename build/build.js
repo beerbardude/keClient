@@ -68207,7 +68207,7 @@ var _class = function () {
 
         view.registerAddKnownErrorHandler(this.onAddKnownError.bind(this));
         view.registerShowDetailErrorHandler(this.onShowDetailError.bind(this));
-        view.registerAddWorklogClick(this.onAddWorklog.bind(this));
+        view.registersaveWorklogClick(this.onAddWorklog.bind(this));
 
         view.registerOnHomeButtonClick(this.onHomeButtonClick.bind(this));
         view.registerSearchFieldClick(this.onSearchFieldClick.bind(this));
@@ -68582,7 +68582,6 @@ var renderDetailWorklog = Symbol();
 var onAddErrorClick = Symbol();
 var onShowDetailClick = Symbol();
 var onShowWorklogDetailClick = Symbol();
-var onAddWorklogClick = Symbol();
 var onsaveWorklogClick = Symbol();
 
 var onHomeButtonClick = Symbol();
@@ -68605,9 +68604,11 @@ var _class = function () {
         $homeButton.addEventListener('click', this[onHomeButtonClick].bind(this));
 
         var $addButton = $doc.querySelector(".add-button");
-        $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory));
+        $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory)
 
-        var $searchField = $doc.querySelector("#search-field");
+        //$saveWorkLogButton.addEventListener('click', this[onsaveWorklogClick].bind(this, ))
+
+        );var $searchField = $doc.querySelector("#search-field");
         $searchField.addEventListener('input', this[onSearchFieldClick].bind(this));
     }
 
@@ -68622,9 +68623,9 @@ var _class = function () {
             this.onShowDetailErrorHandler = handler;
         }
     }, {
-        key: "registerAddWorklogClick",
-        value: function registerAddWorklogClick(handler) {
-            this.onAddWorklogClick = handler;
+        key: "registersaveWorklogClick",
+        value: function registersaveWorklogClick(handler) {
+            this.onsaveWorklogClick = handler;
         }
     }, {
         key: "registerOnHomeButtonClick",
@@ -68687,7 +68688,7 @@ var _class = function () {
             this.onShowDetailErrorHandler(knownError);
         }
     }, {
-        key: onAddWorklogClick,
+        key: onsaveWorklogClick,
         value: function value(event) {
             var id = arguments[0];
             var name = arguments[0].name;
@@ -68701,7 +68702,7 @@ var _class = function () {
                 name: name,
                 category: category
             };
-            this.onAddWorklogClick(worklogRecord);
+            this.onsaveWorklogClick(worklogRecord);
         }
     }, {
         key: onHomeButtonClick,
@@ -68754,6 +68755,10 @@ var _class = function () {
 
             var renderedErrors = knownErrors.map(this[renderKnownError]).join('');
             $table.innerHTML = $table.innerHTML.concat(renderedErrors);
+
+            $(document).ready(function () {
+                $('#known-error-list').DataTable({ bFilter: false, bInfo: false });
+            });
 
             var $tr = $table.querySelectorAll(".known-error");
             $tr.forEach(function (tr) {
@@ -68883,20 +68888,32 @@ var _class = function () {
             });
 
             var $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog");
-            $hiddenWorklogDiv.innerHTML = this.rendernewWorklog
+            $hiddenWorklogDiv.innerHTML = this.rendernewWorklog();
 
-            /* let $saveButton = $hiddenWorklogDiv.querySelector(".save-worklog")
-             let $actualWorklogTitle = this.$main.querySelector("#title")
-             let $actualWorklogText = this.$main.querySelector("#desciption")*/
+            $('#new-worklog').on('shown.bs.collapse', function () {
+                console.log("Opened");
+            }
 
-            //        $saveButton.addEventListener('click', this[onsaveWorklogClick].bind(this, $actualWorklogTitle, $actualWorklogText))
+            /*/!*        test.armin.on('hidden.bs.collapse', function(){
+                        console.log("closed")
+                    })*!/
+                    test_armin.on('shown.bs.collapse', function(e){
+                        console.log("Opened" + e.currentTarget.id)
+                    })
+            
+                    test_armin.hasClass('in')*/
 
+            );var $saveWorkLogButton = $hiddenWorklogDiv.querySelector("#save-worklog");
+            var $actualWorklogTitle = this.$main.querySelector("#title");
+            var $actualWorklogText = this.$main.querySelector("#desciption");
 
-            ();var worklogList = this.$main.querySelector('.worklog-list');
+            $saveWorkLogButton.addEventListener('click', this[onsaveWorklogClick].bind(this, $actualWorklogTitle, $actualWorklogText));
+
+            var worklogList = this.$main.querySelector('.worklog-list');
             worklogList.innerHTML = worklogs.map(this[renderWorklogs]).join(''
 
             /*        let $addWorkLogButton = this.$main.querySelector("#add-worklog")
-                    $addWorkLogButton.addEventListener('click', this[onAddWorklogClick].bind(this, detailError))*/
+                    $addWorkLogButton.addEventListener('click', this[onsaveWorklogClick].bind(this, detailError))*/
             );
         }
     }, {
