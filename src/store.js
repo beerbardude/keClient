@@ -159,6 +159,7 @@ export default class Store {
         })
     }
 
+
     // todo: get error details
     getKnownErrorDetails() {
         let headers = new Headers({

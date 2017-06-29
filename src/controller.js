@@ -1,8 +1,5 @@
 'use strict'
-
 const localIndex = "http://localhost:8008/src/index.html"
-
-const getKnownErrorOfAllErrors = Symbol()
 
 
 export default class {
@@ -34,19 +31,13 @@ export default class {
         view.registerSearchFieldClick(this.onSearchFieldClick.bind(this))
     }
 
-
-    onAddKnownError(knownError){
-        this.store.addKnownError(knownError)
-    }
-
-
     /**
      * shows a known error with its worklogs
      * @param knownErrorId
      */
     onShowDetailError(knownErrorId){
         let view = this.view
-        this.view.changeAddButtonText()
+        this.view.hideAddButton()
         let stats = this.store.getStats()
         this.store.getKnownErrorById(knownErrorId)
         .then((worklog) => {
@@ -57,30 +48,33 @@ export default class {
     }
 
 
-    // todo: load worklog details
-    onShowWorklogDetail(worklog) {
-        let worklogDetail = this.store.getWorklogDetails(worklog)
-        this.view.showWorklogDetail(worklog)
+    /**
+     * adda a known error by calling the store add known error function
+     * @param knownError
+     */
+    onAddKnownError(knownError){
+        this.store.addKnownError(knownError)
     }
 
-    [getKnownErrorOfAllErrors](knownErrors, knownError) {
-        return knownErrors.then(result => {
-            result.forEach(value => {
-                if(value.id == knownError.id) {
-                    value
-                }
-            });
-        }).catch(err => console.log("Error in get error of all known errors"))
-    }
-
+    /**
+     * adds a worklog by calling the store add worklog function
+     * @param worklog
+     */
     onAddWorklog(worklog) {
         this.store.addWorklog(worklog)
     }
 
+    /**
+     * reloads the page by setting the window location to the index.html
+     */
     onHomeButtonClick() {
         window.location.replace(localIndex)
     }
 
+    /**
+     * gets the search results by calling the store getSearchResults function
+     * @param searchString
+     */
     onSearchFieldClick(searchString) {
         this.store.getSearchResults(searchString)
             .then(this.view.renderKnownErrors.bind(this.view))

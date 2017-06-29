@@ -3,20 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Known Error DB</title>
-
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../node_modules/datatables.net-bs/css/dataTables.bootstrap.css">
-    <!--<link rel="stylesheet" href="datatables.css">-->
-
-
 
     <script src="../node_modules/jquery/dist/jquery.js"></script>
     <script src="../node_modules/datatables.net/js/jquery.dataTables.js"></script>
     <script src="../node_modules/datatables.net-bs/js/dataTables.bootstrap.js"></script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-
-
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
 
 </head>
 <body>
@@ -52,34 +45,46 @@
         </nav>
 </header>
     <h1 style="margin-top: 70px; margin-left: 25px;">Known Errors</h1>
+    <hr>
 <main style="width: 90%; margin-left: auto; margin-right: auto;">
 
-    <!--<div><input type="text" placeholder="Suche"></div>-->
     <p>
-                <input class="new-error-title">
-
-                    <select class="new-error-status">
-                    </select>
-                    <select class="new-error-name">
-                    </select>
-                    <select class="new-error-category">
-                    </select>
+                <input id="new-error-title" class="form-control" placeholder="Titel">
+                <table>
+                    <tr>
+                        <td style="padding: 10px;">
+                            <b><i>Status</i></b><p>
+                            <select id="new-error-status" class="form-control">
+                            </select>
+                        </td>
+                        <td style="padding: 10px;">
+                            <b><i>Name</i></b><p>
+                            <select id="new-error-name" class="form-control">
+                            </select>
+                        </td>
+                        <td style="padding: 10px;">
+                            <b><i>Kategorie</i></b><p>
+                            <select id="new-error-category" class="form-control">
+                            </select>
+                        </td>
+                    </tr>
+                </table>
 
         <table id="known-error-list" class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th data-field="id">ID</th>
                     <th data-field="title">Title</th>
-                    <th data-field="status">Status</th>
                     <th data-field="name">Name</th>
+                    <th data-field="status">Status</th>
                     <th data-field="category">Kategorie</th>
                 </tr>
             </thead>
         </table>
 
 </main>
-<footer>
-    <div class="errorDiv"></div>
+<footer style="width: 90%; margin-left: auto; margin-right: auto;">
+    <div class="errorDiv" style="color: #f00;"></div>
 </footer>
 <script src="../build/build.js"></script>
 </body>
