@@ -50,6 +50,7 @@ export function renderDetailErrorImportFunction (dError) {
                         </tr>
                     </thead>                   
                 </table>
+                <div id="hidden-error-id" style="visibility: hidden;">${dError.id}</div>
                 <div class="hidden-worklog"></div>
                 <div class="worklog-list"></div>`;
 }
@@ -99,7 +100,7 @@ export function rendernewWorklogImportFunction () {
                     <br>
                         <label for="description">Beschreibung:</label>
                             <textarea class="form-control" id="description">
-                            </textarea>
+                            </textarea>                        
                     <br>
                         <div class="dropdown">
                             <span class="pull-left">

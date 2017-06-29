@@ -36,16 +36,15 @@ export function onShowDetailClickImportFunction(event) {
  */
 export function onsaveWorklogClickImportFunction(event) {
     let id = arguments[0]
-    let name = arguments[0].name
-    let category = arguments[0].category
     let title = arguments[1].value
     let description = arguments[2].value
+    let name = arguments[3].options[arguments[3].selectedIndex].value
+
     let worklogRecord =  {
         id_known_error : id,
         title : title,
         description : description,
-        name : name,
-        category: category
+        name : name
     }
     this.onsaveWorklogClick(worklogRecord)
 }

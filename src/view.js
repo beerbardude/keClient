@@ -217,9 +217,16 @@ export default class {
 
         let $saveWorkLogButton = $hiddenWorklogDiv.querySelector("#save-worklog")
         let $actualWorklogTitle = this.$main.querySelector("#title")
-        let $actualWorklogText = this.$main.querySelector("#desciption")
+        let $actualWorklogText = this.$main.querySelector("#description")
+        let $keid = this.$main.querySelector('#hidden-error-id').innerHTML
+        let $addedBy = this.$main.querySelector('#new-worklog-name')
 
-        $saveWorkLogButton.addEventListener('click', onsaveWorklogClickImportFunction.bind(this, $actualWorklogTitle, $actualWorklogText))
+        $saveWorkLogButton.addEventListener('click', onsaveWorklogClickImportFunction.bind(this,
+            $keid,
+            $actualWorklogTitle,
+            $actualWorklogText,
+            $addedBy
+        ))
 
         let worklogList = this.$main.querySelector('.worklog-list')
         worklogList.innerHTML = worklogs.map(renderWorklogsImportFunction).join('')
