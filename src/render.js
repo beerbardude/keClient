@@ -61,15 +61,24 @@ export function renderDetailErrorImportFunction (dError) {
  * @returns {string}
  */
 export function renderWorklogsImportFunction (worklog) {
-    return `<div class="panel-group" id="accordion">
+    let part1 = `<div class="panel-group" id="accordion">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#${worklog.id}">
-                            ${worklog.title}
-                            </a>
-                            <span class="pull-right">${worklog.name}</span>
-                            </h3>
+                            <div class="container-fluid panel-container">
+                                <div class="col-lg-8 text-left">
+                                <h3 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#${worklog.id}">
+                                    ${worklog.title}
+                                    </a>
+                                </div>
+                                <div class="col-lg-2 text-right">
+                                    ${worklog.name}
+                                 </div>`
+
+    let worklogLinkPart = `<span class="pull-right" id="kb_link"><a href="${worklog.kb_link}">KB Link</a></span>`
+    let worklogLink = worklog.kb_link
+    let part2 = `</h3>
+                     </div>
                         </div>
                         <div id="${worklog.id}" class="panel-collapse collapse">
                             <div class="panel-body">
@@ -77,7 +86,13 @@ export function renderWorklogsImportFunction (worklog) {
                             </div>
                         </div>
                     </div>
-                </div>`;
+                </div>`
+    if(worklogLink === null) {
+        return part1.concat(part2)
+    }
+    else {
+        return part1.concat(worklogLinkPart.concat(part2))
+    }
 }
 
 /**
@@ -101,6 +116,10 @@ export function rendernewWorklogImportFunction () {
                         <label for="description">Beschreibung:</label>
                             <textarea class="form-control" id="description">
                             </textarea>                        
+                    <br>
+                         <label for="worklog-link">Link:</label>
+                            <input class="form-control" id="worklog-link">
+                                                    
                     <br>
                         <div class="dropdown">
                             <span class="pull-left">

@@ -39,12 +39,17 @@ export function onsaveWorklogClickImportFunction(event) {
     let title = arguments[1].value
     let description = arguments[2].value
     let name = arguments[3].options[arguments[3].selectedIndex].value
+    let link = arguments[4].value
+    if(link === '') {
+        link = null
+    }
 
     let worklogRecord =  {
         id_known_error : id,
         title : title,
         description : description,
-        name : name
+        name : name,
+        link : link
     }
     this.onsaveWorklogClick(worklogRecord)
 }
