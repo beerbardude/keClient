@@ -167,6 +167,7 @@ export default class {
      * @param {*names} names 
      */
     renderNames(names){
+        console.log('renderNames', names)
         let $nameSelection = this.$doc.querySelector("#new-error-name")
         $nameSelection.innerHTML = names.map(renderNameImportFunction).join('')
     }
@@ -184,8 +185,9 @@ export default class {
      * @param worklogs known error worklogs
      * @param detailError a known error
      * @param stats all stats for option values
+     * @param names all names for hidden field
      */
-    renderDetailErrors(worklogs, detailError, stats) {
+    renderDetailErrors(worklogs, detailError, stats, names) {
         this.$doc.querySelector('h1').innerHTML = 'Worklogs'
 
         this.$main.innerHTML = renderDetailErrorImportFunction(detailError)
@@ -203,6 +205,11 @@ export default class {
 
         let $hiddenWorklogDiv = this.$main.querySelector(".hidden-worklog")
         $hiddenWorklogDiv.innerHTML = rendernewWorklogImportFunction()
+
+        let newWorklogNameSelect = this.$main.querySelector('#new-worklog-name')
+        names.then((name) => {
+            newWorklogNameSelect.innerHTML = name.map(renderNameImportFunction).join('')
+        })
 
         $('#new-worklog').on('shown.bs.collapse', function(){
             console.log("Opened")

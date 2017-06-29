@@ -50,7 +50,6 @@ export function renderDetailErrorImportFunction (dError) {
                         </tr>
                     </thead>                   
                 </table>
-                <!--<div class="text-center"><button type="button" id="add-worklog" class="btn btn-primary btn-lg">Add Worklog</button></div>-->
                 <div class="hidden-worklog"></div>
                 <div class="worklog-list"></div>`;
 }
@@ -102,7 +101,12 @@ export function rendernewWorklogImportFunction () {
                             <textarea class="form-control" id="description">
                             </textarea>
                     <br>
-                        <span class="pull-right"><button type="button" id="save-worklog" class="btn btn-primary btn-lg">Save</button></span>
+                        <div class="dropdown">
+                            <span class="pull-left">
+                                <b><i>Name</i></b><p>
+                                <select id="new-worklog-name" class="form-control">
+                                </select></span></div>
+                            <span class="pull-right"><button type="button" id="save-worklog" class="btn btn-primary btn-lg">Save</button></span>
                         </div>
                     </div>`
 }

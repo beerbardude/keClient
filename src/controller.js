@@ -39,10 +39,11 @@ export default class {
         let view = this.view
         this.view.hideAddButton()
         let stats = this.store.getStats()
+        let names = this.store.getNames()
         this.store.getKnownErrorById(knownErrorId)
         .then((worklog) => {
             console.log("worklog", worklog)
-            view.renderDetailErrors(worklog, knownErrorId, stats)
+            view.renderDetailErrors(worklog, knownErrorId, stats, names)
         }).catch(view.renderError.bind(view))
 
     }
