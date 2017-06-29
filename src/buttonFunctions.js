@@ -62,9 +62,12 @@ export function onHomeButtonClickImportFunction (event) {
  * @param event
  */
 export function onSearchFieldClickImportFunction (event) {
-    let text = event.target.value
-    if(text !== undefined && text !== '') {
-        this.onSearchFieldClick(text)
+    if (event.keyCode === 13) {
+        let text = event.target.value
+        if (text !== undefined && text !== '') {
+            event.preventDefault()
+            this.onSearchFieldClick(text)
+        }
     }
 }
 

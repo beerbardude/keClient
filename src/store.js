@@ -82,7 +82,10 @@ export default class Store {
         );
     }
 
-    // todo : check server method
+    /**
+     * adda a worklog to the database
+     * @param worklog
+     */
     addWorklog(worklog) {
         request.post(
             server + 'add_wl',
@@ -160,57 +163,6 @@ export default class Store {
     }
 
 
-    // todo: get error details
-    getKnownErrorDetails() {
-        let headers = new Headers({
-            'Accept': 'application/json'
-        })
-        return fetch(server + '', {
-            method: 'GET',
-            headers: headers,
-        }).then((resp)=>{
-            if(resp.ok){
-                return resp.json()
-            }else{
-                return Promise.reject(resp)
-            }
-        })
-    }
-
-    // //todo: get worklogs
-    // getWorklogsFromKnownError(knownError) {
-    //     let headers = new Headers({
-    //         'Accept': 'application/json'
-    //     })
-    //     return fetch(server + 'worklog', {
-    //         method: 'GET',
-    //         headers: headers,
-    //     }).then((resp)=>{
-    //         if(resp.ok){
-    //             return resp.json()
-    //         }else{
-    //             return Promise.reject(resp)
-    //         }
-    //     })
-    // }
-
-    //todo: get worklog details
-    getWorklogDetails(worklog) {
-        let headers = new Headers({
-            'Accept': 'application/json'
-        })
-        return fetch(server + 'singleWorklog', {
-            method: 'GET',
-            headers: headers,
-        }).then((resp)=>{
-            if(resp.ok){
-                return resp.json()
-            }else{
-                return Promise.reject(resp)
-            }
-        })
-    }
-
     /**
      * gets the search results
      * ke id
@@ -221,7 +173,6 @@ export default class Store {
      * @param searchString
      */
     getSearchResults(searchString) {
-        console.log('store search', searchString)
         let headers = new Headers({
             'Accept': 'application/json'
         })
@@ -236,6 +187,5 @@ export default class Store {
             }
         })
     }
-
 
 }

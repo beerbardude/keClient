@@ -36,7 +36,7 @@ export default class {
         $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory))
 
         let $searchField = $doc.querySelector("#search-field")
-        $searchField.addEventListener('input', onSearchFieldClickImportFunction.bind(this))
+        $searchField.addEventListener('keypress', onSearchFieldClickImportFunction.bind(this))
     }
 
 
@@ -117,7 +117,7 @@ export default class {
         $table.innerHTML = $table.innerHTML.concat(renderedErrors)
 
         $( document ).ready(function() {
-            $('#known-error-list').DataTable({bFilter: false, bInfo: false});
+            $('#known-error-list').DataTable({bFilter: false, bInfo: false, retrieve: true});
         } );
 
         let $tr = $table.querySelectorAll(".known-error")
