@@ -130,6 +130,8 @@ export default class {
             let knownErrorStatusText = tr.querySelector(".known-error-status-text")
             let knownErrorCategory = tr.querySelector(".known-error-category")
             let knownErrorCategoryText = tr.querySelector(".known-error-category-text")
+            let knownErrorcreatedat= tr.querySelector(".known-error-date")
+            let knownErrorcreatedatText = tr.querySelector(".known-error-date-text")
             let detailButton = tr.querySelector("a")
                 detailButton.addEventListener('click', onShowDetailClickImportFunction.bind(this,
                 knownErrorId.value,
@@ -139,7 +141,9 @@ export default class {
                 knownErrorStatus.value,
                 knownErrorStatusText.innerHTML,
                 knownErrorCategory.value,
-                knownErrorCategoryText.innerHTML))
+                knownErrorCategoryText.innerHTML,
+                knownErrorcreatedat.value,
+                knownErrorcreatedatText.innerHTML))
         })
     }
 
