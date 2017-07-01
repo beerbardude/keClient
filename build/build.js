@@ -68221,6 +68221,7 @@ function onShowDetailClickImportFunction(event) {
  * @param event
  */
 function onsaveWorklogClickImportFunction(event) {
+
     var id = arguments[0];
     var title = arguments[1].value;
     var description = arguments[2].value;
@@ -68228,6 +68229,8 @@ function onsaveWorklogClickImportFunction(event) {
     var link = arguments[4].value;
     if (link === '') {
         link = null;
+    } else if (!/^https?:\/\//i.test(link)) {
+        link = 'http://' + link;
     }
 
     var worklogRecord = {
@@ -68413,7 +68416,7 @@ function renderDetailErrorImportFunction(dError) {
 function renderWorklogsImportFunction(worklog) {
     var part1 = "<div class=\"panel-group\" id=\"accordion\">\n                    <div class=\"panel panel-default\">\n                        <div class=\"panel-heading\">\n                            <div class=\"container-fluid panel-container\">\n                                <div class=\"col-lg-8 text-left\">\n                                <h3 class=\"panel-title\">\n                                    <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#" + worklog.id + "\">\n                                    " + worklog.title + "\n                                    </a>\n                                </div>\n                                <div class=\"col-lg-2 text-right\">\n                                    " + worklog.name + "\n                                 </div>";
 
-    var worklogLinkPart = "<span class=\"pull-right\" id=\"kb_link\"><a href=\"" + worklog.kb_link + "\">KB Link</a></span>";
+    var worklogLinkPart = "<span class=\"pull-right\" id=\"kb_link\"><a target=\"_blank\" href=\"" + worklog.kb_link + "\">KB Link</a></span>";
     var worklogLink = worklog.kb_link;
     var part2 = "</h3>\n                     </div>\n                        </div>\n                        <div id=\"" + worklog.id + "\" class=\"panel-collapse collapse\">\n                            <div class=\"panel-body\">\n                            " + worklog.description + "\n                            </div>\n                        </div>\n                    </div>\n                </div>";
     if (worklogLink === null) {
@@ -68428,7 +68431,7 @@ function renderWorklogsImportFunction(worklog) {
  * @returns {string}
  */
 function rendernewWorklogImportFunction() {
-    return "<div class='panel-group' id=\"accordion\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"display-4\">\n                        <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#new-worklog\">\n                        <div class=\"text-center\">Add Worklog</div>\n                        </a>\n                        </h3>\n                    </div>\n                    <div id=\"new-worklog\" class=\"panel-collapse collapse\">\n                        <div class=\"panel-body\">\n                        <label for=\"title\">Titel:</label>\n                            <input type=\"text\" class=\"form-control\" id=\"title\">\n                    <br>\n                        <label for=\"description\">Beschreibung:</label>\n                            <textarea class=\"form-control\" id=\"description\">\n                            </textarea>                        \n                    <br>\n                         <label for=\"worklog-link\">Link:</label>\n                            <input class=\"form-control\" id=\"worklog-link\">\n                                                    \n                    <br>\n                        <div class=\"dropdown\">\n                            <span class=\"pull-left\">\n                                <b><i>Name</i></b><p>\n                                <select id=\"new-worklog-name\" class=\"form-control\">\n                                </select></span></div>\n                            <span class=\"pull-right\"><button type=\"button\" id=\"save-worklog\" class=\"btn btn-primary btn-lg\">Save</button></span>\n                        </div>\n                    </div>";
+    return "<div class='panel-group' id=\"accordion\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"display-4\">\n                        <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#new-worklog\">\n                        <div class=\"text-center\">Add Worklog</div>\n                        </a>\n                        </h3>\n                    </div>\n                    <div id=\"new-worklog\" class=\"panel-collapse collapse\">\n                        <div class=\"panel-body\">\n                        <label for=\"title\">Titel:</label>\n                            <input type=\"text\" class=\"form-control\" id=\"title\" required>\n                    <br>\n                        <label for=\"description\">Beschreibung:</label>\n                            <textarea class=\"form-control\" id=\"description\" required>\n                            </textarea>                        \n                    <br>\n                         <label for=\"worklog-link\">Link:</label>\n                            <input class=\"form-control\" id=\"worklog-link\" type=\"url\" placeholder=\"http://www.example.com\" pattern=\"https?://.+\" required>\n                                                    \n                    <br>\n                        <div class=\"dropdown\">\n                            <span class=\"pull-left\">\n                                <b><i>Name</i></b><p>\n                                <select id=\"new-worklog-name\" class=\"form-control\">\n                                </select></span></div>\n                            <span class=\"pull-right\"><button type=\"button\" id=\"save-worklog\" class=\"btn btn-primary btn-lg\">Save</button></span>\n                        </div>\n                    </div>";
 }
 
 /**
@@ -68912,18 +68915,34 @@ var _class = function () {
                 newWorklogNameSelect.innerHTML = name.map(_render.renderNameImportFunction).join('');
             });
 
-            $('#new-worklog').on('shown.bs.collapse', function () {
-                console.log("Opened");
-            });
-
             var $saveWorkLogButton = $hiddenWorklogDiv.querySelector("#save-worklog");
             var $actualWorklogTitle = this.$main.querySelector("#title");
             var $actualWorklogText = this.$main.querySelector("#description");
             var $keid = this.$main.querySelector('#hidden-error-id').innerHTML;
             var $addedBy = this.$main.querySelector('#new-worklog-name');
-            var $link = this.$main.querySelector("#worklog-link");
+            var $link = this.$main.querySelector("#worklog-link"
 
-            $saveWorkLogButton.addEventListener('click', _buttonFunctions.onsaveWorklogClickImportFunction.bind(this, $keid, $actualWorklogTitle, $actualWorklogText, $addedBy, $link));
+            /*        $( document ).ready(function() {
+                        $('#worklog-link').bootstrapValidator({
+                            feedbackIcons:{
+                                valid: 'glyphicon glyphicon-ok',
+                                invalid: 'glyphicon glyphicon-remove',
+                                validating: 'glyphicon glyphicon-refresh'
+                            },
+                            fields: {
+                                worklog_link: {
+                                    validators: {
+                                        uri: {
+                                            allowLocal: false,
+                                            message: 'Bitte gültige URL mit http:// oder https:// angeben'
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                    })*/
+
+            );$saveWorkLogButton.addEventListener('click', _buttonFunctions.onsaveWorklogClickImportFunction.bind(this, $keid, $actualWorklogTitle, $actualWorklogText, $addedBy, $link));
 
             var worklogList = this.$main.querySelector('.worklog-list');
             worklogList.innerHTML = worklogs.map(_render.renderWorklogsImportFunction).join('');

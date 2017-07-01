@@ -78,7 +78,7 @@ export function renderWorklogsImportFunction (worklog) {
                                     ${worklog.name}
                                  </div>`
 
-    let worklogLinkPart = `<span class="pull-right" id="kb_link"><a href="${worklog.kb_link}">KB Link</a></span>`
+    let worklogLinkPart = `<span class="pull-right" id="kb_link"><a target="_blank" href="${worklog.kb_link}">KB Link</a></span>`
     let worklogLink = worklog.kb_link
     let part2 = `</h3>
                      </div>
@@ -114,14 +114,14 @@ export function rendernewWorklogImportFunction () {
                     <div id="new-worklog" class="panel-collapse collapse">
                         <div class="panel-body">
                         <label for="title">Titel:</label>
-                            <input type="text" class="form-control" id="title">
+                            <input type="text" class="form-control" id="title" required>
                     <br>
                         <label for="description">Beschreibung:</label>
-                            <textarea class="form-control" id="description">
+                            <textarea class="form-control" id="description" required>
                             </textarea>                        
                     <br>
                          <label for="worklog-link">Link:</label>
-                            <input class="form-control" id="worklog-link">
+                            <input class="form-control" id="worklog-link" type="url" placeholder="http://www.example.com" pattern="https?://.+" required>
                                                     
                     <br>
                         <div class="dropdown">

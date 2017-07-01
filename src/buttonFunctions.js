@@ -35,6 +35,8 @@ export function onShowDetailClickImportFunction(event) {
  * @param event
  */
 export function onsaveWorklogClickImportFunction(event) {
+
+
     let id = arguments[0]
     let title = arguments[1].value
     let description = arguments[2].value
@@ -42,6 +44,9 @@ export function onsaveWorklogClickImportFunction(event) {
     let link = arguments[4].value
     if(link === '') {
         link = null
+    }
+    else if(!/^https?:\/\//i.test(link)){
+        link = 'http://' + link
     }
 
     let worklogRecord =  {

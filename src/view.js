@@ -215,9 +215,6 @@ export default class {
             newWorklogNameSelect.innerHTML = name.map(renderNameImportFunction).join('')
         })
 
-        $('#new-worklog').on('shown.bs.collapse', function(){
-            console.log("Opened")
-        })
 
         let $saveWorkLogButton = $hiddenWorklogDiv.querySelector("#save-worklog")
         let $actualWorklogTitle = this.$main.querySelector("#title")
@@ -226,14 +223,14 @@ export default class {
         let $addedBy = this.$main.querySelector('#new-worklog-name')
         let $link = this.$main.querySelector("#worklog-link")
 
-        $saveWorkLogButton.addEventListener('click', onsaveWorklogClickImportFunction.bind(this,
+            $saveWorkLogButton.addEventListener('click', onsaveWorklogClickImportFunction.bind(this,
             $keid,
             $actualWorklogTitle,
             $actualWorklogText,
             $addedBy,
             $link
         ))
-
+        
         let worklogList = this.$main.querySelector('.worklog-list')
         worklogList.innerHTML = worklogs.map(renderWorklogsImportFunction).join('')
     }
