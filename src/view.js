@@ -195,14 +195,14 @@ export default class {
         this.$doc.querySelector('h1').innerHTML = 'Worklogs'
 
         this.$main.innerHTML = renderDetailErrorImportFunction(detailError)
-        let selection = this.$main.querySelector("select")
+        let $selection = this.$main.querySelector("select")
 
         stats.then((stat) => {
-            selection.innerHTML = stat.map(renderStatImportFunction).join('')
+            $selection.innerHTML = stat.map(renderStatImportFunction).join('')
         }).then(() => {
-            for(let i = 0; i < selection.options.length; i++) {
-                if(selection.options[i].value === detailError.stat) {
-                    selection.options[i].selected = true
+            for(let i = 0; i < $selection.options.length; i++) {
+                if($selection.options[i].value === detailError.stat) {
+                    $selection.options[i].selected = true
                 }
             }
         })
@@ -228,7 +228,8 @@ export default class {
             $actualWorklogTitle,
             $actualWorklogText,
             $addedBy,
-            $link
+            $link,
+            $selection
         ))
         
         let worklogList = this.$main.querySelector('.worklog-list')

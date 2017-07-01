@@ -35,13 +35,12 @@ export function onShowDetailClickImportFunction(event) {
  * @param event
  */
 export function onsaveWorklogClickImportFunction(event) {
-
-
     let id = arguments[0]
     let title = arguments[1].value
     let description = arguments[2].value
     let name = arguments[3].options[arguments[3].selectedIndex].value
     let link = arguments[4].value
+    let status = arguments[5].options[arguments[5].selectedIndex].value
     if(link === '') {
         link = null
     }
@@ -54,7 +53,8 @@ export function onsaveWorklogClickImportFunction(event) {
         title : title,
         description : description,
         name : name,
-        link : link
+        link : link,
+        status: status
     }
     this.onsaveWorklogClick(worklogRecord)
 }
