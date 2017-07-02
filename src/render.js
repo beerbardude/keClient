@@ -117,8 +117,7 @@ export function rendernewWorklogImportFunction () {
                             <input type="text" class="form-control" id="title" required>
                     <br>
                         <label for="description">Beschreibung:</label>
-                            <textarea class="form-control" id="description" required>
-                            </textarea>                        
+                            <textarea class="form-control" id="description" required></textarea>                        
                     <br>
                          <label for="worklog-link">Link:</label>
                             <input class="form-control" id="worklog-link" type="url" placeholder="http://www.example.com" pattern="https?://.+" required>
