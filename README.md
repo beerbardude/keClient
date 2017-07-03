@@ -13,15 +13,14 @@ Das dazugehörige Projekt für die Server Seite ist unter folgendem Link zu find
 
 ## Entwicklung
 
-Als Grundlage für den Client wird Node.js mit gulp verwendet.
+Als Grundlage für den Client wird Node.js mit [gulp](http://gulpjs.com/) verwendet.
 
 Weitere Libraries und Erweiterungen die bei der Entwicklung zum Zug kamen:
 
-- [Bootstrap](http://getbootstrap.com/) Hauptsächlich für Design verwendet
-- [jquery](https://jquery.com/)  Abhängigkeiten von Bootstrap Tables zu jQuery
-- [datatables.net](https://datatables.net/)  jQuery Plugin für erweiterte Table Funktionen
+- [Bootstrap](http://getbootstrap.com/) - Hauptsächlich für Design verwendet
+- [jquery](https://jquery.com/)  - Abhängigkeiten von Bootstrap Tables zu jquery
+- [datatables.net](https://datatables.net/)  - jquery Plugin für erweiterte Table Funktionen
 - [datatables.net-bs](https://datatables.net/manual/styling/bootstrap) - Bootstrap Styling für Datatables
-- [gulp](http://gulpjs.com/)
 - [request](https://github.com/request/request)  - Einfache Lösung um http calls auszuführen
 
 ## Installation
