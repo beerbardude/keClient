@@ -54,4 +54,11 @@ Der Server ist läuft auf localhost:8008. Um direkt auf die Startseite zu gelang
 
 Die Startseite (/src) sieht folgendermassen aus:
 
+![ScreenShot](Screenshots/start_page.PNG)
+
+Der Title eines jeweiligen Known Errors ist ein Link der in eine Detail View wechselt, in welcher die erfassten Worklogs für den spezifischen Known Error angezeigt werden:
+
+![ScreenShot](Screenshots/worklog_overview.PNG)
+
+
 
