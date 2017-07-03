@@ -58,7 +58,8 @@ Die Startseite (/src) sieht folgendermassen aus:
 
 Der Title eines jeweiligen Known Errors ist ein Link der in eine Detail View wechselt, in welcher die erfassten Worklogs für den spezifischen Known Error angezeigt werden:
 
-![ScreenShot](Screenshots/worklog_overview.PNG)
+![ScreenShot](Screenshots/worklogs_overview.PNG)
 
+### Suchfunktion
 
 
