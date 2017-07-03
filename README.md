@@ -31,10 +31,27 @@ Sollten hierbei unerwartet Probleme auftauchen, können die Module auch manuell 
 
 ```
 npm install bootstrap@3
+
 npm install jquery
+
 npm install datatables.net
+
 npm install datatables.net-bs
+
 npm install gulp
+
 npm install request
 ```
+
+## Starten des Servers
+
+Ist die Installation abgeschlossen, kann der Server mit dem Befehl gulp gestartet werden.
+WICHTIG: Ist der gulp Befehl nicht als Variable im OS definiert, muss in den node_modules/.bin Folder gewechselt werden.
+
+Der Server ist läuft auf localhost:8008. Um direkt auf die Startseite zu gelangen kann http://localhost:8008/src aufgerufen werden.
+
+## GUI und Funktionen
+
+Die Startseite (/src) sieht folgendermassen aus:
+
 
