@@ -114,13 +114,13 @@ export function rendernewWorklogImportFunction () {
                     <div id="new-worklog" class="panel-collapse collapse">
                         <div class="panel-body">
                         <label for="title">Titel:</label>
-                            <input type="text" class="form-control" id="title" required>
+                            <input type="text" class="form-control" id="title">
                     <br>
                         <label for="description">Beschreibung:</label>
-                            <textarea class="form-control" id="description" required></textarea>                        
+                            <textarea class="form-control" id="description"></textarea>                        
                     <br>
                          <label for="worklog-link">Link:</label>
-                            <input class="form-control" id="worklog-link" type="url" placeholder="http://www.example.com" pattern="https?://.+" required>
+                            <input class="form-control" id="worklog-link" type="url" placeholder="http://www.example.com">
                                                     
                     <br>
                         <div class="dropdown">

@@ -118,8 +118,8 @@ export default class {
         $table.innerHTML = $table.innerHTML.concat(
             `<tfoot>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
+                    <th></th>
+                    <th></th>
                     <th>Name</th>
                     <th>Status</th>
                     <th>Kategorie</th>
@@ -131,27 +131,111 @@ export default class {
         $( document ).ready(function() {
             $('#known-error-list').DataTable({
 
-                bFilter: false,
+                sDom: '<"top">lrtip',
                 bInfo: true,
 
-
                 initComplete: function(){
-                    this.api().columns().every( function(){
+                    this.api().columns([2]).every( function(){
                         let column = this
-                        let select = $('<select><option value="">Show All</option></select>')
+                        let select = $('<select id="filter2"><option value=""></option></select>')
                             .appendTo( $(column.footer()).empty() )
-                            .on( 'change', function() {
-                                let val = $.fn.datatTable.util.escapeRegex(
-                                    $(this).val()
-                                )
-                                column
-                                    .search( val ? '^'+val+'$' : '', true, false)
-                                    .draw()
+                            .on( 'change', function () {
+                                var val = $(this).val()
+
+                                let filter_value = document.getElementById("filter2").options[this.selectedIndex].text
+                                if (val =="") {
+                                        column.search("").draw()
+                                }else {
+                                    column
+                                        .search(filter_value)
+                                        .draw()
+
+                                }
+
                             })
                         column.data().unique().sort().each( function ( d, j) {
-                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                            let option = document.createElement('option')
+                            option.value = d
+                            option.innerHTML = d
+                            select.append(option)
+                        })
+                    }),
+                    this.api().columns([3]).every( function(){
+                        let column = this
+                        let select = $('<select id="filter3"><option value=""></option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function () {
+                                var val = $(this).val()
+
+                                let filter_value = document.getElementById("filter3").options[this.selectedIndex].text
+                                if (val =="") {
+                                    column.search("").draw()
+                                }else {
+                                    column
+                                        .search(filter_value)
+                                        .draw()
+
+                                }
+
+                            })
+                        column.data().unique().sort().each( function ( d, j) {
+                            let option = document.createElement('option')
+                            option.value = d
+                            option.innerHTML = d
+                            select.append(option)
+                        })
+                    }),
+                    this.api().columns([4]).every( function() {
+                        let column = this
+                        let select = $('<select id="filter4"><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $(this).val()
+
+                                let filter_value = document.getElementById("filter4").options[this.selectedIndex].text
+                                if (val == "") {
+                                    column.search("").draw()
+                                } else {
+                                    column
+                                        .search(filter_value)
+                                        .draw()
+
+                                }
+
+                            })
+                        column.data().unique().sort().each(function (d, j) {
+                            let option = document.createElement('option')
+                            option.value = d
+                            option.innerHTML = d
+                            select.append(option)
+                        })
+                    }),
+                    this.api().columns([5]).every( function() {
+                        let column = this
+                        let select = $('<select id="filter5"><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $(this).val()
+
+                                let filter_value = document.getElementById("filter5").options[this.selectedIndex].text
+                                if (val == "") {
+                                    column.search("").draw()
+                                } else {
+                                    column
+                                        .search(filter_value)
+                                        .draw()
+
+                                }
+
+                            })
+                        column.data().unique().sort().each(function (d, j) {
+                            let option = document.createElement('option')
+                            option.value = d
+                            option.innerHTML = d
+                            select.append(option)
                         })
                     })
+
                 },
                 retrieve: true
             })
@@ -208,7 +292,6 @@ export default class {
      * @param {*names} names 
      */
     renderNames(names){
-        console.log('renderNames', names)
         let $nameSelection = this.$doc.querySelector("#new-error-name")
         $nameSelection.innerHTML = names.map(renderNameImportFunction).join('')
     }
