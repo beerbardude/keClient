@@ -80,13 +80,13 @@ Die Sortier Funktion befindet sich in den Table Headers.
 Über das "Show x entries" Menü kann eingestellt werden, was für eine Anzahl Known Errors auf der Startseite angezeigt werden soll.
 Die Navigation für die nächste Seite befindet sich unten rechts
 
-![ScreenShot](Screenshots/filter_sort.png)
+![ScreenShot](Screenshots/filter_sort.PNG)
 
 ### Hinzufügen eines neuen Worklogs
 
 Um einen neuen Worklog zu erfassen, muss in die Detailansicht vom Known Error gewechselt werden (Klick auf "Title" des entsprechenden Fehlers). In der Detailansicht kann auf "Add Worklog" geklickt werden. Dies klappt eine Eingabemaske auf. Dort können die gewünschten Daten erfasst und mit dem Klicken auf "Save" gespeichert werden
 
-![ScreenShot](Screenshots/add_wl.png)
+![ScreenShot](Screenshots/add_wl.PNG)
 
 ### Allgemeine Infos zu den Funktionen
 
