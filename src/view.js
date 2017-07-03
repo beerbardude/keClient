@@ -115,9 +115,46 @@ export default class {
 
         let renderedErrors = knownErrors.map(renderKnownErrorImportFunction).join('')
         $table.innerHTML = $table.innerHTML.concat(renderedErrors)
+        $table.innerHTML = $table.innerHTML.concat(
+            `<tfoot>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Kategorie</th>
+                    <th>Erstellt</th>
+                </tr>
+            </tfoot>`
+        )
 
         $( document ).ready(function() {
-            $('#known-error-list').DataTable({bFilter: false, bInfo: false, retrieve: true});
+            $('#known-error-list').DataTable({
+
+                bFilter: false,
+                bInfo: true,
+
+
+                initComplete: function(){
+                    this.api().columns().every( function(){
+                        let column = this
+                        let select = $('<select><option value="">Show All</option></select>')
+                            .appendTo( $(column.footer()).empty() )
+                            .on( 'change', function() {
+                                let val = $.fn.datatTable.util.escapeRegex(
+                                    $(this).val()
+                                )
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false)
+                                    .draw()
+                            })
+                        column.data().unique().sort().each( function ( d, j) {
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        })
+                    })
+                },
+                retrieve: true
+            })
         } );
 
         let $tr = $table.querySelectorAll(".known-error")
