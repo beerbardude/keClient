@@ -122,6 +122,7 @@ Starten der Tests:
 - Weitere Tests implementieren
 - Verbesserung des Exception Handling
 - Filter Implementierung nach Suche (Im Moment können Filter nur in der Startseite verwendet werden. Bei Suchergebnissen ist im Moment kein Filtering möglich)
+- Reload nach Hinzufügen eines neuen Worklogs - Reload auf Detailansicht des Errors mit Anzeige des gerade hinzugefügten Worklog
 
 ## Autoren
 
