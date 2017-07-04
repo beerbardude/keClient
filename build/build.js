@@ -68175,97 +68175,7 @@ var view = new _view2.default(window.document);
 var store = new _store2.default();
 var ctrl = new _controller2.default(view, store);
 
-},{"./controller":343,"./store":345,"./view":346}],342:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.onShowDetailClickImportFunction = onShowDetailClickImportFunction;
-exports.onsaveWorklogClickImportFunction = onsaveWorklogClickImportFunction;
-exports.onHomeButtonClickImportFunction = onHomeButtonClickImportFunction;
-exports.onSearchFieldClickImportFunction = onSearchFieldClickImportFunction;
-/**
- * Created by Pain on 29.06.2017.
- */
-
-/**
- * gets the known error values for the detail view
- * @param event
- */
-function onShowDetailClickImportFunction(event) {
-    var id = arguments[0];
-    var title = arguments[1];
-    var name = arguments[2];
-    var nameText = arguments[3];
-    var stat = arguments[4];
-    var statText = arguments[5];
-    var cat = arguments[6];
-    var catText = arguments[7];
-
-    var knownError = {
-        id: id,
-        title: title,
-        name: name,
-        nameText: nameText,
-        stat: stat,
-        statText: statText,
-        cat: cat,
-        catText: catText
-    };
-    this.onShowDetailErrorHandler(knownError);
-}
-
-/**
- * gets the new known error values for adding it
- * @param event
- */
-function onsaveWorklogClickImportFunction(event) {
-
-    var id = arguments[0];
-    var title = arguments[1].value;
-    var description = arguments[2].value;
-    var name = arguments[3].options[arguments[3].selectedIndex].value;
-    var link = arguments[4].value;
-    if (link === '') {
-        link = null;
-    } else if (!/^https?:\/\//i.test(link)) {
-        link = 'http://' + link;
-    }
-
-    var worklogRecord = {
-        id_known_error: id,
-        title: title,
-        description: description,
-        name: name,
-        link: link
-    };
-    this.onsaveWorklogClick(worklogRecord);
-}
-
-/**
- * home button
- * @param event
- */
-function onHomeButtonClickImportFunction(event) {
-    this.onHomeButtonClick(event);
-}
-
-/**
- * gets values for the search function
- * @param event
- */
-function onSearchFieldClickImportFunction(event) {
-    if (event.keyCode === 13) {
-        var text = event.target.value;
-        if (text !== undefined && text !== '') {
-            event.preventDefault();
-            this.onSearchFieldClick(text);
-        }
-    }
-}
-
-},{}],343:[function(require,module,exports){
+},{"./controller":342,"./store":345,"./view":346}],342:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68369,6 +68279,110 @@ var _class = function () {
 
 exports.default = _class;
 
+},{}],343:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.onShowDetailClickImportFunction = onShowDetailClickImportFunction;
+exports.onsaveWorklogClickImportFunction = onsaveWorklogClickImportFunction;
+exports.onHomeButtonClickImportFunction = onHomeButtonClickImportFunction;
+exports.onSearchFieldClickImportFunction = onSearchFieldClickImportFunction;
+exports.createOption = createOption;
+/**
+ * Created by Pain on 29.06.2017.
+ */
+
+/**
+ * gets the known error values for the detail view
+ * @param event
+ */
+function onShowDetailClickImportFunction(event) {
+    var id = arguments[0];
+    var title = arguments[1];
+    var name = arguments[2];
+    var nameText = arguments[3];
+    var stat = arguments[4];
+    var statText = arguments[5];
+    var cat = arguments[6];
+    var catText = arguments[7];
+
+    var knownError = {
+        id: id,
+        title: title,
+        name: name,
+        nameText: nameText,
+        stat: stat,
+        statText: statText,
+        cat: cat,
+        catText: catText
+    };
+    this.onShowDetailErrorHandler(knownError);
+}
+
+/**
+ * gets the new known error values for adding it
+ * @param event
+ */
+function onsaveWorklogClickImportFunction(event) {
+    var id = arguments[0];
+    var title = arguments[1].value;
+    var description = arguments[2].value;
+    var name = arguments[3].options[arguments[3].selectedIndex].value;
+    var link = arguments[4].value;
+    var status = arguments[5].options[arguments[5].selectedIndex].value;
+    if (link === '') {
+        link = null;
+    } else if (!/^https?:\/\//i.test(link)) {
+        link = 'http://' + link;
+    }
+
+    var worklogRecord = {
+        id_known_error: id,
+        title: title,
+        description: description,
+        name: name,
+        link: link,
+        status: status
+    };
+    this.onsaveWorklogClick(worklogRecord);
+}
+
+/**
+ * home button
+ * @param event
+ */
+function onHomeButtonClickImportFunction(event) {
+    this.onHomeButtonClick(event);
+}
+
+/**
+ * gets values for the search function
+ * @param event
+ */
+function onSearchFieldClickImportFunction(event) {
+    if (event.keyCode === 13) {
+        var text = event.target.value;
+        if (text !== undefined && text !== '') {
+            event.preventDefault();
+            this.onSearchFieldClick(text);
+        }
+    }
+}
+
+/**
+ * creates the options of the select for the filter
+ * @param d data
+ * @returns {Element}
+ */
+function createOption(d) {
+    var option = document.createElement('option');
+    option.value = d;
+    option.innerHTML = d;
+    return option;
+}
+
 },{}],344:[function(require,module,exports){
 "use strict";
 
@@ -68383,6 +68397,7 @@ exports.rendernewWorklogImportFunction = rendernewWorklogImportFunction;
 exports.renderStatImportFunction = renderStatImportFunction;
 exports.renderCategoryImportFunction = renderCategoryImportFunction;
 exports.renderNameImportFunction = renderNameImportFunction;
+exports.renderTableFooter = renderTableFooter;
 /**
  * Created by Pain on 29.06.2017.
  */
@@ -68431,7 +68446,7 @@ function renderWorklogsImportFunction(worklog) {
  * @returns {string}
  */
 function rendernewWorklogImportFunction() {
-    return "<div class='panel-group' id=\"accordion\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"display-4\">\n                        <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#new-worklog\">\n                        <div class=\"text-center\">Add Worklog</div>\n                        </a>\n                        </h3>\n                    </div>\n                    <div id=\"new-worklog\" class=\"panel-collapse collapse\">\n                        <div class=\"panel-body\">\n                        <label for=\"title\">Titel:</label>\n                            <input type=\"text\" class=\"form-control\" id=\"title\" required>\n                    <br>\n                        <label for=\"description\">Beschreibung:</label>\n                            <textarea class=\"form-control\" id=\"description\" required>\n                            </textarea>                        \n                    <br>\n                         <label for=\"worklog-link\">Link:</label>\n                            <input class=\"form-control\" id=\"worklog-link\" type=\"url\" placeholder=\"http://www.example.com\" pattern=\"https?://.+\" required>\n                                                    \n                    <br>\n                        <div class=\"dropdown\">\n                            <span class=\"pull-left\">\n                                <b><i>Name</i></b><p>\n                                <select id=\"new-worklog-name\" class=\"form-control\">\n                                </select></span></div>\n                            <span class=\"pull-right\"><button type=\"button\" id=\"save-worklog\" class=\"btn btn-primary btn-lg\">Save</button></span>\n                        </div>\n                    </div>";
+    return "<div class='panel-group' id=\"accordion\">\n                    <div class=\"panel-heading\">\n                        <h3 class=\"display-4\">\n                        <a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#new-worklog\">\n                        <div class=\"text-center\">Add Worklog</div>\n                        </a>\n                        </h3>\n                    </div>\n                    <div id=\"new-worklog\" class=\"panel-collapse collapse\">\n                        <div class=\"panel-body\">\n                        <label for=\"title\">Titel:</label>\n                            <input type=\"text\" class=\"form-control\" id=\"title\">\n                    <br>\n                        <label for=\"description\">Beschreibung:</label>\n                            <textarea class=\"form-control\" id=\"description\"></textarea>                        \n                    <br>\n                         <label for=\"worklog-link\">Link:</label>\n                            <input class=\"form-control\" id=\"worklog-link\" type=\"url\" placeholder=\"http://www.example.com\">\n                                                    \n                    <br>\n                        <div class=\"dropdown\">\n                            <span class=\"pull-left\">\n                                <b><i>Name</i></b><p>\n                                <select id=\"new-worklog-name\" class=\"form-control\">\n                                </select></span></div>\n                            <span class=\"pull-right\"><button type=\"button\" id=\"save-worklog\" class=\"btn btn-primary btn-lg\">Save</button></span>\n                        </div>\n                    </div>";
 }
 
 /**
@@ -68456,6 +68471,14 @@ function renderCategoryImportFunction(category) {
  */
 function renderNameImportFunction(name) {
     return "<option value=\"" + name.id + "\">" + name.name + "</option>";
+}
+
+/**
+ * renders a tablefooter for the filter function
+ * @returns {string}
+ */
+function renderTableFooter() {
+    return "<tfoot>\n                <tr>\n                    <th></th>\n                    <th></th>\n                    <th>Name</th>\n                    <th>Status</th>\n                    <th>Kategorie</th>\n                    <th>Erstellt</th>\n                </tr>\n            </tfoot>";
 }
 
 },{}],345:[function(require,module,exports){
@@ -68692,7 +68715,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _render = require('./render');
 
-var _buttonFunctions = require('./buttonFunctions');
+var _functions = require('./functions');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -68712,13 +68735,13 @@ var _class = function () {
         var $inputCategory = $doc.querySelector("#new-error-category");
 
         var $homeButton = $doc.querySelector("#home-button");
-        $homeButton.addEventListener('click', _buttonFunctions.onHomeButtonClickImportFunction.bind(this));
+        $homeButton.addEventListener('click', _functions.onHomeButtonClickImportFunction.bind(this));
 
         var $addButton = $doc.querySelector(".add-button");
         $addButton.addEventListener('click', this[onAddErrorClick].bind(this, $inputTitle, $inputStatus, $inputName, $inputCategory));
 
         var $searchField = $doc.querySelector("#search-field");
-        $searchField.addEventListener('keypress', _buttonFunctions.onSearchFieldClickImportFunction.bind(this));
+        $searchField.addEventListener('keypress', _functions.onSearchFieldClickImportFunction.bind(this));
     }
 
     _createClass(_class, [{
@@ -68811,9 +68834,77 @@ var _class = function () {
 
             var renderedErrors = knownErrors.map(_render.renderKnownErrorImportFunction).join('');
             $table.innerHTML = $table.innerHTML.concat(renderedErrors);
+            $table.innerHTML = $table.innerHTML.concat((0, _render.renderTableFooter)());
 
             $(document).ready(function () {
-                $('#known-error-list').DataTable({ bFilter: false, bInfo: false, retrieve: true });
+                console.log('dataTable');
+
+                $('#known-error-list').DataTable({
+                    sDom: '<"top">lrtip',
+                    bInfo: true,
+
+                    initComplete: function initComplete() {
+                        this.api().columns([2]).every(function () {
+                            console.log('init');
+                            var column = this;
+                            var select = $('<select id="filter2"><option value=""></option></select>').appendTo($(column.footer()).empty()).on('change', function () {
+                                var val = $(this).val();
+                                var filter_value = document.getElementById("filter2").options[this.selectedIndex].text;
+                                if (val === "") {
+                                    column.search("").draw();
+                                } else {
+                                    column.search(filter_value).draw();
+                                }
+                            });
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append((0, _functions.createOption)(d));
+                            });
+                        }), this.api().columns([3]).every(function () {
+                            var column = this;
+                            var select = $('<select id="filter3"><option value=""></option></select>').appendTo($(column.footer()).empty()).on('change', function () {
+                                var val = $(this).val();
+                                var filter_value = document.getElementById("filter3").options[this.selectedIndex].text;
+                                if (val === "") {
+                                    column.search("").draw();
+                                } else {
+                                    column.search(filter_value).draw();
+                                }
+                            });
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append((0, _functions.createOption)(d));
+                            });
+                        }), this.api().columns([4]).every(function () {
+                            var column = this;
+                            var select = $('<select id="filter4"><option value=""></option></select>').appendTo($(column.footer()).empty()).on('change', function () {
+                                var val = $(this).val();
+                                var filter_value = document.getElementById("filter4").options[this.selectedIndex].text;
+                                if (val === "") {
+                                    column.search("").draw();
+                                } else {
+                                    column.search(filter_value).draw();
+                                }
+                            });
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append((0, _functions.createOption)(d));
+                            });
+                        }), this.api().columns([5]).every(function () {
+                            var column = this;
+                            var select = $('<select id="filter5"><option value=""></option></select>').appendTo($(column.footer()).empty()).on('change', function () {
+                                var val = $(this).val();
+                                var filter_value = document.getElementById("filter5").options[this.selectedIndex].text;
+                                if (val === "") {
+                                    column.search("").draw();
+                                } else {
+                                    column.search(filter_value).draw();
+                                }
+                            });
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append((0, _functions.createOption)(d));
+                            });
+                        });
+                    },
+                    retrieve: true
+                });
             });
 
             var $tr = $table.querySelectorAll(".known-error");
@@ -68829,7 +68920,7 @@ var _class = function () {
                 var knownErrorcreatedat = tr.querySelector(".known-error-date");
                 var knownErrorcreatedatText = tr.querySelector(".known-error-date-text");
                 var detailButton = tr.querySelector("a");
-                detailButton.addEventListener('click', _buttonFunctions.onShowDetailClickImportFunction.bind(_this, knownErrorId.value, knownErrorTitle.value, knownErrorName.value, knownErrorNameText.innerHTML, knownErrorStatus.value, knownErrorStatusText.innerHTML, knownErrorCategory.value, knownErrorCategoryText.innerHTML, knownErrorcreatedat.value, knownErrorcreatedatText.innerHTML));
+                detailButton.addEventListener('click', _functions.onShowDetailClickImportFunction.bind(_this, knownErrorId.value, knownErrorTitle.value, knownErrorName.value, knownErrorNameText.innerHTML, knownErrorStatus.value, knownErrorStatusText.innerHTML, knownErrorCategory.value, knownErrorCategoryText.innerHTML, knownErrorcreatedat.value, knownErrorcreatedatText.innerHTML));
             });
         }
 
@@ -68865,7 +68956,6 @@ var _class = function () {
     }, {
         key: 'renderNames',
         value: function renderNames(names) {
-            console.log('renderNames', names);
             var $nameSelection = this.$doc.querySelector("#new-error-name");
             $nameSelection.innerHTML = names.map(_render.renderNameImportFunction).join('');
         }
@@ -68895,14 +68985,14 @@ var _class = function () {
             this.$doc.querySelector('h1').innerHTML = 'Worklogs';
 
             this.$main.innerHTML = (0, _render.renderDetailErrorImportFunction)(detailError);
-            var selection = this.$main.querySelector("select");
+            var $selection = this.$main.querySelector("select");
 
             stats.then(function (stat) {
-                selection.innerHTML = stat.map(_render.renderStatImportFunction).join('');
+                $selection.innerHTML = stat.map(_render.renderStatImportFunction).join('');
             }).then(function () {
-                for (var i = 0; i < selection.options.length; i++) {
-                    if (selection.options[i].value === detailError.stat) {
-                        selection.options[i].selected = true;
+                for (var i = 0; i < $selection.options.length; i++) {
+                    if ($selection.options[i].value === detailError.stat) {
+                        $selection.options[i].selected = true;
                     }
                 }
             });
@@ -68920,29 +69010,9 @@ var _class = function () {
             var $actualWorklogText = this.$main.querySelector("#description");
             var $keid = this.$main.querySelector('#hidden-error-id').innerHTML;
             var $addedBy = this.$main.querySelector('#new-worklog-name');
-            var $link = this.$main.querySelector("#worklog-link"
+            var $link = this.$main.querySelector("#worklog-link");
 
-            /*        $( document ).ready(function() {
-                        $('#worklog-link').bootstrapValidator({
-                            feedbackIcons:{
-                                valid: 'glyphicon glyphicon-ok',
-                                invalid: 'glyphicon glyphicon-remove',
-                                validating: 'glyphicon glyphicon-refresh'
-                            },
-                            fields: {
-                                worklog_link: {
-                                    validators: {
-                                        uri: {
-                                            allowLocal: false,
-                                            message: 'Bitte gültige URL mit http:// oder https:// angeben'
-                                        }
-                                    }
-                                }
-                            }
-                        })
-                    })*/
-
-            );$saveWorkLogButton.addEventListener('click', _buttonFunctions.onsaveWorklogClickImportFunction.bind(this, $keid, $actualWorklogTitle, $actualWorklogText, $addedBy, $link));
+            $saveWorkLogButton.addEventListener('click', _functions.onsaveWorklogClickImportFunction.bind(this, $keid, $actualWorklogTitle, $actualWorklogText, $addedBy, $link, $selection));
 
             var worklogList = this.$main.querySelector('.worklog-list');
             worklogList.innerHTML = worklogs.map(_render.renderWorklogsImportFunction).join('');
@@ -68998,6 +69068,6 @@ var _class = function () {
 
 exports.default = _class;
 
-},{"./buttonFunctions":342,"./render":344}]},{},[341])
+},{"./functions":343,"./render":344}]},{},[341])
 
 //# sourceMappingURL=build.js.map

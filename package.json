@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --require babel-register src/test/renderTests.js"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +23,7 @@
     "browserify": "^14.0.0",
     "gulp-connect": "^5.0.0",
     "gulp-sourcemaps": "^2.4.1",
+    "mocha": "^3.4.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.9.0"

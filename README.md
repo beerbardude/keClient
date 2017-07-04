@@ -98,6 +98,25 @@ WICHTIG: Einmal erfasste Einträge können nicht mehr geändert werden. Nur der 
 
 Dies ist bewusst so umgesetzt, damit nicht nachträglich die History eines Known Errors verändert werden kann.
 
+## Tests
+
+Es wird getestet ob die render Funktionen, welche html ausgeben, das richtige Ergebnis liefern.
+
+Testframework: mocha
+
+Testmodul installieren
+
+    yarn add -D mocha
+    yarn add -D babel-register
+
+Startskript in package json:
+        
+    "test": "./node_modules/.bin/mocha --require babel-register src/test/renderTests.js" 
+
+Starten der Tests: 
+
+    npm test
+
 ## To Do
 - Encoding / Escaping ergänzen
 - Tests implementieren

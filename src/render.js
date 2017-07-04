@@ -30,7 +30,7 @@ export function renderKnownErrorImportFunction (knownError) {
                             <div class="known-error-status-text">${knownError.status}</div></td>
                         <td><input type="hidden" class="known-error-category" value="${knownError.catid}"/>
                             <div class="known-error-category-text">${knownError.category}</div></td>
-                        <td><input type="hidden" class="known-error-date" value="${knownError.creatdeat}"/>
+                        <td><input type="hidden" class="known-error-date" value="${knownError.createdat}"/>
                             <div class="known-error-date-text">${knownError.createdat}</div></td>
                     </tr>`
 }
