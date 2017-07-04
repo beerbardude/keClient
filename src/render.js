@@ -160,5 +160,20 @@ export function renderNameImportFunction (name){
     return `<option value="${name.id}">${name.name}</option>`;
 }
 
-
+/**
+ * renders a tablefooter for the filter function
+ * @returns {string}
+ */
+export function renderTableFooter() {
+    return `<tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Kategorie</th>
+                    <th>Erstellt</th>
+                </tr>
+            </tfoot>`
+}
 

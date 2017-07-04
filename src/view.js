@@ -7,14 +7,16 @@ import {renderTableHeadImportFunction,
         rendernewWorklogImportFunction,
         renderStatImportFunction,
         renderCategoryImportFunction,
-        renderNameImportFunction}
+        renderNameImportFunction,
+        renderTableFooter}
     from './render'
 
 import {onShowDetailClickImportFunction,
         onsaveWorklogClickImportFunction,
         onHomeButtonClickImportFunction,
-        onSearchFieldClickImportFunction}
-    from './buttonFunctions'
+        onSearchFieldClickImportFunction,
+        createOption}
+    from './functions'
 
 const onAddErrorClick = Symbol()
 
@@ -115,18 +117,7 @@ export default class {
 
         let renderedErrors = knownErrors.map(renderKnownErrorImportFunction).join('')
         $table.innerHTML = $table.innerHTML.concat(renderedErrors)
-        $table.innerHTML = $table.innerHTML.concat(
-            `<tfoot>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Status</th>
-                    <th>Kategorie</th>
-                    <th>Erstellt</th>
-                </tr>
-            </tfoot>`
-        )
+        $table.innerHTML = $table.innerHTML.concat(renderTableFooter())
 
         $( document ).ready(function() {
             $('#known-error-list').DataTable({
@@ -141,23 +132,17 @@ export default class {
                             .appendTo( $(column.footer()).empty() )
                             .on( 'change', function () {
                                 var val = $(this).val()
-
                                 let filter_value = document.getElementById("filter2").options[this.selectedIndex].text
-                                if (val =="") {
+                                if (val === "") {
                                         column.search("").draw()
                                 }else {
                                     column
                                         .search(filter_value)
                                         .draw()
-
                                 }
-
                             })
                         column.data().unique().sort().each( function ( d, j) {
-                            let option = document.createElement('option')
-                            option.value = d
-                            option.innerHTML = d
-                            select.append(option)
+                            select.append(createOption(d))
                         })
                     }),
                     this.api().columns([3]).every( function(){
@@ -166,23 +151,17 @@ export default class {
                             .appendTo( $(column.footer()).empty() )
                             .on( 'change', function () {
                                 var val = $(this).val()
-
                                 let filter_value = document.getElementById("filter3").options[this.selectedIndex].text
-                                if (val =="") {
+                                if (val === "") {
                                     column.search("").draw()
                                 }else {
                                     column
                                         .search(filter_value)
                                         .draw()
-
                                 }
-
                             })
                         column.data().unique().sort().each( function ( d, j) {
-                            let option = document.createElement('option')
-                            option.value = d
-                            option.innerHTML = d
-                            select.append(option)
+                            select.append(createOption(d))
                         })
                     }),
                     this.api().columns([4]).every( function() {
@@ -191,23 +170,17 @@ export default class {
                             .appendTo($(column.footer()).empty())
                             .on('change', function () {
                                 var val = $(this).val()
-
                                 let filter_value = document.getElementById("filter4").options[this.selectedIndex].text
-                                if (val == "") {
+                                if (val === "") {
                                     column.search("").draw()
                                 } else {
                                     column
                                         .search(filter_value)
                                         .draw()
-
                                 }
-
                             })
                         column.data().unique().sort().each(function (d, j) {
-                            let option = document.createElement('option')
-                            option.value = d
-                            option.innerHTML = d
-                            select.append(option)
+                            select.append(createOption(d))
                         })
                     }),
                     this.api().columns([5]).every( function() {
@@ -216,23 +189,17 @@ export default class {
                             .appendTo($(column.footer()).empty())
                             .on('change', function () {
                                 var val = $(this).val()
-
                                 let filter_value = document.getElementById("filter5").options[this.selectedIndex].text
-                                if (val == "") {
+                                if (val === "") {
                                     column.search("").draw()
                                 } else {
                                     column
                                         .search(filter_value)
                                         .draw()
-
                                 }
-
                             })
                         column.data().unique().sort().each(function (d, j) {
-                            let option = document.createElement('option')
-                            option.value = d
-                            option.innerHTML = d
-                            select.append(option)
+                            select.append(createOption(d))
                         })
                     })
 
