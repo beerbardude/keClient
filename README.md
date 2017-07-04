@@ -119,7 +119,7 @@ Starten der Tests:
 
 ## To Do
 - Encoding / Escaping ergänzen
-- Tests implementieren
+- Weitere Tests implementieren
 - Verbesserung des Exception Handling
 - Filter Implementierung nach Suche (Im Moment können Filter nur in der Startseite verwendet werden. Bei Suchergebnissen ist im Moment kein Filtering möglich)
 
